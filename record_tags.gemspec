@@ -7,8 +7,8 @@ require "record_tags/version"
 Gem::Specification.new do |s|
   s.name        = "record_tags"
   s.version     = RecordTags::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
+  s.authors     = ["Mat Pataki"]
+  s.email       = ["matpataki@gmail.com"]
   s.homepage    = "TODO"
   s.summary     = "TODO: Summary of RecordTags."
   s.description = "TODO: Description of RecordTags."
@@ -20,4 +20,5 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "~> 4.1.12"
 
   s.add_development_dependency "sqlite3"
+  s.add_development_dependency "rspec"
 end
