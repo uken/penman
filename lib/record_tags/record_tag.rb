@@ -1,3 +1,4 @@
+require 'active_record'
 require 'record_tags/record_tag_exceptions'
 
 class RecordTag < ActiveRecord::Base

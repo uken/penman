@@ -1,5 +1,5 @@
 require 'record_tags/configuration'
-# require 'record_tags/record_tag'
+require 'record_tags/record_tag'
 
 module RecordTags
   class << self
