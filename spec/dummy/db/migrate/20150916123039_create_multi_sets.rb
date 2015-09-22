@@ -7,5 +7,7 @@ class CreateMultiSets < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :multi_sets, :reference, unique: true
   end
 end
