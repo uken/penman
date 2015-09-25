@@ -409,7 +409,7 @@ describe RecordTag do
     # we will start by testing the weapon model being that it has all of the primitive
     # types that we are interested in at the moment
     it 'should seed a simple model with numbers' do
-      weapon = Weapon.create(reference: 'new_weapon', name: 'name', type: 'some_type', damage_factor: 100)
+      weapon = Weapon.create(reference: 'new_weapon', category: 'name', type: 'some_category', damage_factor: 100)
       seed_files = RecordTag.generate_seed_for_model(Weapon)
       # simulate an environment in which this weapon does not exist
       # (ie. as if we had generated the seed on a design env and seeded on prod)
@@ -424,7 +424,7 @@ describe RecordTag do
     end
 
     it 'should seed a simple model with strings' do
-      weapon = Weapon.create(reference: 'new_weapon', type: 'some_type')
+      weapon = Weapon.create(reference: 'new_weapon', category: 'some_category')
       seed_files = RecordTag.generate_seed_for_model(Weapon)
       weapon.destroy
 
@@ -432,11 +432,11 @@ describe RecordTag do
 
       weapon = Weapon.find_by(reference: 'new_weapon')
       expect(weapon).not_to be_nil
-      expect(weapon.type).to eq('some_type')
+      expect(weapon.category).to eq('some_category')
     end
 
     it 'should seed a simple model with nil values' do
-      weapon = Weapon.create(reference: 'new_weapon', type: 'some_type', damage_factor: nil)
+      weapon = Weapon.create(reference: 'new_weapon', category: 'some_category', damage_factor: nil)
       seed_files = RecordTag.generate_seed_for_model(Weapon)
       weapon.destroy
 
@@ -448,7 +448,7 @@ describe RecordTag do
     end
 
     it 'should seed a simple model with times' do
-      weapon = Weapon.create(reference: 'new_weapon', type: 'some_type')
+      weapon = Weapon.create(reference: 'new_weapon', category: 'some_category')
       updated_at = weapon.updated_at
       seed_files = RecordTag.generate_seed_for_model(Weapon)
       weapon.destroy
@@ -461,7 +461,7 @@ describe RecordTag do
     end
 
     it 'should seed a simple model with booleans' do
-      weapon = Weapon.create(reference: 'new_weapon', type: 'some_type', ranged: false)
+      weapon = Weapon.create(reference: 'new_weapon', category: 'some_category', ranged: false)
       seed_files = RecordTag.generate_seed_for_model(Weapon)
       weapon.destroy
 
