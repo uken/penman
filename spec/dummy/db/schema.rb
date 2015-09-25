@@ -11,13 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150916130851) do
+ActiveRecord::Schema.define(version: 20150922122115) do
 
   create_table "assets", force: true do |t|
     t.string   "reference"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "assets", ["reference"], name: "index_assets_on_reference", unique: true, using: :btree
 
   create_table "inventory_items", force: true do |t|
     t.integer  "player_id"
@@ -33,12 +35,14 @@ ActiveRecord::Schema.define(version: 20150916130851) do
     t.datetime "updated_at"
   end
 
+  add_index "items", ["reference"], name: "index_items_on_reference", unique: true, using: :btree
+
   create_table "multi_set_members", force: true do |t|
     t.integer  "multi_set_id"
     t.string   "setable_type"
     t.integer  "setable_id"
-    t.integer  "weight"
-    t.integer  "quantity"
+    t.integer  "weight",       default: 1
+    t.integer  "quantity",     default: 1
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -51,10 +55,25 @@ ActiveRecord::Schema.define(version: 20150916130851) do
     t.datetime "updated_at"
   end
 
+  add_index "multi_sets", ["reference"], name: "index_multi_sets_on_reference", unique: true, using: :btree
+
   create_table "players", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "players", ["name"], name: "index_players_on_name", unique: true, using: :btree
+
+  create_table "weapons", force: true do |t|
+    t.string   "reference"
+    t.integer  "damage_factor", default: 1
+    t.string   "type"
+    t.boolean  "ranged",        default: true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "weapons", ["reference"], name: "index_weapons_on_reference", unique: true, using: :btree
 
 end
