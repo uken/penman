@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150922122115) do
+ActiveRecord::Schema.define(version: 20150925025633) do
 
   create_table "assets", force: true do |t|
     t.string   "reference"
@@ -68,7 +68,7 @@ ActiveRecord::Schema.define(version: 20150922122115) do
   create_table "weapons", force: true do |t|
     t.string   "reference"
     t.integer  "damage_factor", default: 1
-    t.string   "type"
+    t.string   "category"
     t.boolean  "ranged",        default: true
     t.datetime "created_at"
     t.datetime "updated_at"
