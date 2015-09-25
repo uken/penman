@@ -1,15 +1,6 @@
-login: &login
+development:
   adapter: mysql2
   database: record_tag_dummy
   username: root
   password:
   host: localhost
-
-development:
-  <<: *login
-
-profile:
-  <<: *login
-
-test:
-  <<: *login
