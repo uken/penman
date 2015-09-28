@@ -1,4 +1,6 @@
 class MultiSetMember < ActiveRecord::Base
+  include Taggable
+
   belongs_to :multi_set
   belongs_to :setable, polymorphic: true
 

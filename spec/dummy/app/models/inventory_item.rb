@@ -1,4 +1,6 @@
 class InventoryItem < ActiveRecord::Base
+  include Taggable
+
   belongs_to :item
   belongs_to :player
 
