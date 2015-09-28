@@ -6,8 +6,6 @@ class RecordTag < ActiveRecord::Base
   validates_uniqueness_of :tag, scope: [:record_type, :record_id]
 
   before_save :encode_candidate_key
-  after_create :decode_candidate_key
-  after_find :decode_candidate_key
 
   def encode_candidate_key
     if self.candidate_key.is_a? Hash
@@ -15,13 +13,14 @@ class RecordTag < ActiveRecord::Base
     end
   end
 
-  def decode_candidate_key
+  def decode_candidate_key(key)
     begin
-      self.candidate_key = ActiveSupport::JSON.decode(self.candidate_key).symbolize_keys
+      ActiveSupport::JSON.decode(key).symbolize_keys
     rescue JSON::ParserError
       # This will occur if the candidate key isn't encoded as json.
       #   An example of this would be when we are tagging yaml files as touched when messing with lang.
       #   In that case we store the file path in the candidate key column as a regular string.
+      key
     end
   end
 
@@ -29,6 +28,10 @@ class RecordTag < ActiveRecord::Base
   @@roots       = []
   @@tree        = {}
   @@polymorphic = []
+
+  def candidate_key
+    decode_candidate_key(super)
+  end
 
   class << self
     def disable
