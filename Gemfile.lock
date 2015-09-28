@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     record_tags (0.0.1)
-      rails (~> 4.1.12)
+      rails (>= 4)
 
 GEM
   remote: https://rubygems.org/
