@@ -25,7 +25,7 @@ module RecordTags
       it "resets the seed_path configuration" do
         RecordTags.reset
         config = RecordTags.configuration
-        expect(config.seed_path).to eq('db')
+        expect(config.seed_path).to eq('db/migrate')
       end
 
       it "resets the default_candidate_key configuration" do

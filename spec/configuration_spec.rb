@@ -4,7 +4,7 @@ module RecordTags
   describe Configuration do
     describe '#configure' do
       it "should have a value of 'db' by default" do
-        expect(Configuration.new.seed_path).to eq('db')
+        expect(Configuration.new.seed_path).to eq('db/migrate')
       end
 
       it 'should support seed_path configuration' do

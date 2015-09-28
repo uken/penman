@@ -5,11 +5,11 @@ require 'record_tags/taggable'
 
 module RecordTags
   class << self
-    attr_writer :configuration
+    attr_writer :config
   end
 
   def self.configuration
-    @configuration ||= Configuration.new
+    @config ||= Configuration.new
   end
 
   def self.configure
@@ -17,14 +17,14 @@ module RecordTags
   end
 
   def self.reset
-    @configuration = Configuration.new
+    @config = Configuration.new
   end
 
   def self.seed_path
-    @configuration.seed_path
+    configuration.seed_path
   end
 
   def self.default_candidate_key
-    @configuration.default_candidate_key
+    configuration.default_candidate_key
   end
 end
