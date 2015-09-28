@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
   s.version     = RecordTags::VERSION
   s.authors     = ["Mat Pataki"]
   s.email       = ["matpataki@gmail.com"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of RecordTags."
-  s.description = "TODO: Description of RecordTags."
+  # s.homepage    = "TODO"
+  s.summary     = "Summary of RecordTags."
+  s.description = "Description of RecordTags."
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]

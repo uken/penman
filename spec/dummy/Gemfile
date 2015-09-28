@@ -1,0 +1,2 @@
+gem 'record_tags', path: '../../'
+gem 'mysql2'

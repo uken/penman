@@ -65,6 +65,17 @@ ActiveRecord::Schema.define(version: 20150925025633) do
 
   add_index "players", ["name"], name: "index_players_on_name", unique: true, using: :btree
 
+  create_table "record_tags", force: true do |t|
+    t.integer  "record_id",            default: 0,     null: false
+    t.string   "record_type",                          null: false
+    t.string   "tag",                                  null: false
+    t.boolean  "created_this_session", default: false, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "record_tags", ["record_id", "record_type"], name: "index_record_tags_on_record_id_and_record_type", using: :btree
+
   create_table "weapons", force: true do |t|
     t.string   "reference"
     t.integer  "damage_factor", default: 1
