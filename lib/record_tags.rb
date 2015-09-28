@@ -1,6 +1,7 @@
 require "record_tags/engine"
 require 'record_tags/configuration'
 require 'record_tags/record_tag'
+require 'record_tags/taggable'
 
 module RecordTags
   class << self
