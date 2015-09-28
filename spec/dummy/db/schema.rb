@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20150925025633) do
   create_table "record_tags", force: true do |t|
     t.integer  "record_id",            default: 0,     null: false
     t.string   "record_type",                          null: false
+    t.string   "candidate_key",                        null: false
     t.string   "tag",                                  null: false
     t.boolean  "created_this_session", default: false, null: false
     t.datetime "created_at"
