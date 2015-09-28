@@ -18,13 +18,20 @@ module RecordTags
       before :each do
         RecordTags.configure do |config|
           config.seed_path = 'some/path/where/seeds/should/go'
+          config.default_candidate_key = :name
         end
       end
 
-      it "resets the configuration" do
+      it "resets the seed_path configuration" do
         RecordTags.reset
         config = RecordTags.configuration
         expect(config.seed_path).to eq('db')
+      end
+
+      it "resets the default_candidate_key configuration" do
+        RecordTags.reset
+        config = RecordTags.configuration
+        expect(config.default_candidate_key).to eq(:reference)
       end
     end
   end

@@ -23,4 +23,8 @@ module RecordTags
   def self.seed_path
     @configuration.seed_path
   end
+
+  def self.default_candidate_key
+    @configuration.default_candidate_key
+  end
 end
