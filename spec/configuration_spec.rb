@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module RecordTags
+module Penman
   describe Configuration do
     describe '#configure' do
       it "should have a value of 'db' by default" do

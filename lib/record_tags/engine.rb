@@ -1,4 +1,4 @@
-module RecordTags
+module Penman
   class Engine < ::Rails::Engine
     initializer :append_migrations do |app|
       unless app.config.paths["db/migrate"].include? root.to_s

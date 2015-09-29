@@ -59,7 +59,7 @@ class RecordTag < ActiveRecord::Base
 
     def tag(record, tag)
       return unless @@enabled
-      candidate_key = record.class.try(:candidate_key) || RecordTags.default_candidate_key
+      candidate_key = record.class.try(:candidate_key) || Penman.default_candidate_key
       candidate_key = [candidate_key] unless candidate_key.is_a? Array
       raise RecordTagExceptions::InvalidCandidateKeyForRecord unless record_has_attributes?(record, candidate_key)
 
@@ -179,7 +179,7 @@ class RecordTag < ActiveRecord::Base
       touched_tags = RecordTag.where(record_type: model.name, tag: ['created', 'updated']).includes(:record)
       return nil if touched_tags.empty?
 
-      base_file_path = RecordTags.seed_path
+      base_file_path = Penman.seed_path
       seed_path = File.join(base_file_path, "#{timestamp}_seed_#{model.name.underscore.pluralize}_updates.rb")
 
       File.open(seed_path, 'w') do |f|
@@ -217,7 +217,7 @@ class RecordTag < ActiveRecord::Base
       destroyed_tags = RecordTag.where(record_type: model.name, tag: 'destroyed')
       return nil if destroyed_tags.empty?
 
-      base_file_path = RecordTags.seed_path
+      base_file_path = Penman.seed_path
       seed_path = File.join(base_file_path, "#{timestamp}_seed_#{model.name.underscore.pluralize}_destroys.rb")
 
       File.open(seed_path, 'w') do |f|
@@ -240,7 +240,7 @@ class RecordTag < ActiveRecord::Base
     end
 
     def print_candidate_key(record)
-      candidate_key = record.class.try(:candidate_key) || RecordTags.default_candidate_key
+      candidate_key = record.class.try(:candidate_key) || Penman.default_candidate_key
       candidate_key = [candidate_key] unless candidate_key.is_a? Array
       raise RecordTagExceptions::InvalidCandidateKeyForRecord unless record_has_attributes?(record, candidate_key)
 

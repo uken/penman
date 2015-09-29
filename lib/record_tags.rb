@@ -1,9 +1,9 @@
-require "record_tags/engine"
-require 'record_tags/configuration'
-require 'record_tags/record_tag'
-require 'record_tags/taggable'
+require "penman/engine"
+require 'penman/configuration'
+require 'penman/record_tag'
+require 'penman/taggable'
 
-module RecordTags
+module Penman
   class << self
     attr_writer :config
   end

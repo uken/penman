@@ -1,3 +1,3 @@
-module RecordTags
-  VERSION = "0.0.1"
+module Penman
+  VERSION = "0.0.2"
 end

@@ -1,4 +1,4 @@
-module RecordTags
+module Penman
   class Configuration
     attr_accessor :seed_path
     attr_accessor :default_candidate_key

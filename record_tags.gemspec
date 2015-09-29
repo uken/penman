@@ -1,17 +1,17 @@
 $:.push File.expand_path("../lib", __FILE__)
 
 # Maintain your gem's version:
-require "record_tags/version"
+require "penman/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = "record_tags"
-  s.version     = RecordTags::VERSION
+  s.name        = "penman"
+  s.version     = Penman::VERSION
   s.authors     = ["Mat Pataki"]
   s.email       = ["matpataki@gmail.com"]
   # s.homepage    = "TODO"
-  s.summary     = "Summary of RecordTags."
-  s.description = "Description of RecordTags."
+  s.summary     = "Summary of Penman."
+  s.description = "Description of Penman."
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]

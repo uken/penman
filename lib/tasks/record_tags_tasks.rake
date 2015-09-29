@@ -1,4 +1,6 @@
-# desc "Explaining what the task does"
-# task :record_tags do
-#   # Task goes here
+# namespace :penman do
+#   desc 'Initialize Penman'
+#   task :init do
+
+#   end
 # end
