@@ -1,5 +1,5 @@
 require 'active_record'
-require 'record_tags/record_tag_exceptions'
+require 'penman/penman_exceptions'
 
 class RecordTag < ActiveRecord::Base
   belongs_to :record, polymorphic: true

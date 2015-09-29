@@ -1,2 +1,2 @@
-gem 'record_tags', path: '../../'
+gem 'penman', path: '../../'
 gem 'mysql2'
