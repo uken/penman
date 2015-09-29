@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    record_tags (0.0.1)
+    penman (0.0.2)
       rails (>= 4)
 
 GEM
@@ -105,8 +105,8 @@ PLATFORMS
 
 DEPENDENCIES
   mysql2
+  penman!
   pry-rails
-  record_tags!
   rspec-rails
 
 BUNDLED WITH
