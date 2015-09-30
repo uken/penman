@@ -60,6 +60,11 @@ end
 def run_seed_spec_for_model(model, default_attributes)
   model_candidate_key = model.try(:candidate_key) || :reference
   model_candidate_key = [model_candidate_key] unless model_candidate_key.is_a? Array
+  seed_files = []
+
+  after do
+    seed_files.each { |f| File.delete(f) }
+  end
 
   it 'should handle a single record tagged touched' do
     record = find_or_create_with_tag(
@@ -594,35 +599,35 @@ describe RecordTag do
       run_seed_spec_for_model(Item, default_attributes)
     end
 
-    describe 'MultiSet Seeds' do
-      default_attributes = { reference: 'some_great_new_multiset', weight: 1, quantity: 1 }
-      run_seed_spec_for_model(MultiSet, default_attributes)
-    end
+    # describe 'MultiSet Seeds' do
+    #   default_attributes = { reference: 'some_great_new_multiset', weight: 1, quantity: 1 }
+    #   run_seed_spec_for_model(MultiSet, default_attributes)
+    # end
 
-    describe 'MultiSetMember Seeds' do
-      default_attributes = {
-        multi_set_id: MultiSet.last.id,
-        setable_type: 'Item',
-        setable_id: Item.last.id,
-        weight: 1,
-        quantity: 1,
-      }
-      run_seed_spec_for_model(MultiSetMember, default_attributes)
-    end
+    # describe 'MultiSetMember Seeds' do
+    #   default_attributes = {
+    #     multi_set_id: MultiSet.last.id,
+    #     setable_type: 'Item',
+    #     setable_id: Item.last.id,
+    #     weight: 1,
+    #     quantity: 1,
+    #   }
+    #   run_seed_spec_for_model(MultiSetMember, default_attributes)
+    # end
 
-    describe 'Player Seeds' do
-      default_attributes = { name: 'some name' }
-      run_seed_spec_for_model(Player, default_attributes)
-    end
+    # describe 'Player Seeds' do
+    #   default_attributes = { name: 'some name' }
+    #   run_seed_spec_for_model(Player, default_attributes)
+    # end
 
-    describe 'Asset Seeds' do
-      default_attributes = { reference: 'some reference' }
-      run_seed_spec_for_model(Asset, default_attributes)
-    end
+    # describe 'Asset Seeds' do
+    #   default_attributes = { reference: 'some reference' }
+    #   run_seed_spec_for_model(Asset, default_attributes)
+    # end
 
-    describe 'InventoryItem Seeds' do
-      default_attributes = { player_id: Player.last.id, item_id: Item.last.id }
-      run_seed_spec_for_model(InventoryItem, default_attributes)
-    end
+    # describe 'InventoryItem Seeds' do
+    #   default_attributes = { player_id: Player.last.id, item_id: Item.last.id }
+    #   run_seed_spec_for_model(InventoryItem, default_attributes)
+    # end
   end
 end
