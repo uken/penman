@@ -375,14 +375,12 @@ describe RecordTag do
 
   describe '.tag' do
     let!(:record) {
-      Ability.create!(reference: 'new_ability', name: 'name',
-                      el_type_cd: 'type_code', damage_factor: 100)
+      Weapon.create!(reference: 'some_weapon', damage_factor: 1, category: 'some_category', ranged: true)
     }
 
     it 'should remove any created tags for a record if it is being tagged destroyed' do
-      record_id = record.id
       record.destroy!
-      expect(RecordTag.find_by(record_type: 'Ability', record_id: record_id, tag: 'created')).to be_nil
+      expect(RecordTag.find_by(record_type: 'Weapon', record_id: record.id, tag: 'created')).to be_nil
     end
 
     it 'should replace destroyed tags for a record if it is being created again' do
@@ -390,23 +388,22 @@ describe RecordTag do
       # For example, when someone wants to replace an art asset with another one, and keep the same name.
       original_record_id = record.id
       record.destroy!
-      second_record = Ability.create!(reference: 'new_ability', name: 'name',
-                                      el_type_cd: 'type_code', damage_factor: 100)
-      expect(RecordTag.find_by(record_type: 'Ability', record_id: original_record_id, tag: 'destroyed',
-                               candidate_key: '{"reference":"new_ability"}')).to be_nil
-      expect(RecordTag.find_by(record_type: 'Ability', record_id: second_record, tag: 'created',
-                               candidate_key: '{"reference":"new_ability"}')).not_to be_nil
+      second_record = Weapon.create!(reference: 'some_other_weapon', damage_factor: 1, category: 'some_category', ranged: true)
+      expect(RecordTag.find_by(record_type: 'Weapon', record_id: original_record_id, tag: 'destroyed',
+                               candidate_key: '{"reference":"some_other_weapon"}')).to be_nil
+      expect(RecordTag.find_by(record_type: 'Weapon', record_id: second_record, tag: 'created',
+                               candidate_key: '{"reference":"some_other_weapon"}')).not_to be_nil
     end
 
     it 'should destroy an updated tag if the record was created this session' do
-      record.update!(reference: 'new_ability_2')
+      record.update!(reference: 'some_other_weapon')
       record.destroy!
       expect(RecordTag.find_by(record: record)).to be_nil
     end
 
     it 'should not destroy an updated tag if the record was not created this session' do
       RecordTag.find_by(record: record).destroy!
-      record.update!(reference: 'new_ability_2')
+      record.update!(reference: 'some_other_weapon')
       expect(RecordTag.find_by(record: record)).to_not be_nil
     end
   end
