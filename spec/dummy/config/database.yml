@@ -1,6 +1,6 @@
 development:
   adapter: mysql2
-  database: record_tag_dummy
+  database: penman_dummy
   username: root
   password:
   host: localhost
