@@ -63,7 +63,10 @@ def run_seed_spec_for_model(model, default_attributes)
   seed_files = []
 
   after do
-    seed_files.each { |f| File.delete(f) }
+    seed_files.each do |f|
+      File.delete(f) if File.exist?(f)
+    end
+
     seed_files = []
   end
 
