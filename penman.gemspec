@@ -10,8 +10,8 @@ Gem::Specification.new do |s|
   s.authors     = ['Mat Pataki']
   s.email       = ['matpataki@gmail.com']
   s.homepage    = 'http://uken.com'
-  s.summary     = 'Penman tracks your database changes and generates seed files so they can be propogated to other environments.'
-  s.description = 'The summary pretty much says it. Penman will keep track of database changes on models that you mark as `Taggable`.'\
+  s.summary     = 'Tracks database changes and generates representative seed files.'
+  s.description = 'Penman will keep track of database changes on models that you mark as `Taggable`.'\
                   'Once the changes are ready to be propogated to other environments, a penman will generate a seed file '\
                   'representing those changes.'
   s.license     = 'MIT'
