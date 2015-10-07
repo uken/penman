@@ -79,7 +79,7 @@ class RecordTag < ActiveRecord::Base
       if created_tag.present?
         case tag
         when 'created'
-          raise RecordTagExceptions::BadTracking, RecordTag.format_error_message('created', 'created', candidate_key_to_store)
+          raise RecordTagExceptions::BadTracking, format_error_message('created', 'created', candidate_key_to_store)
         when 'updated'
           created_tag.update!(tag: tag)
         when 'destroyed'
@@ -88,7 +88,7 @@ class RecordTag < ActiveRecord::Base
       elsif updated_tag.present?
         case tag
         when 'created'
-          raise RecordTagExceptions::BadTracking, RecordTag.format_error_message('updated', 'created', candidate_key_to_store)
+          raise RecordTagExceptions::BadTracking, format_error_message('updated', 'created', candidate_key_to_store)
         when 'updated'
           updated_tag.update!(tag: tag)
         when 'destroyed'
@@ -104,9 +104,9 @@ class RecordTag < ActiveRecord::Base
           # We make an updated tag in case non-candidate key attributes have changed, since we don't tack those.
           destroyed_tag.update!(tag: 'updated', record_id: record.id)
         when 'updated'
-          raise RecordTagExceptions::BadTracking, RecordTag.format_error_message('destroyed', 'updated', candidate_key_to_store)
+          raise RecordTagExceptions::BadTracking, format_error_message('destroyed', 'updated', candidate_key_to_store)
         when 'destroyed'
-          raise RecordTagExceptions::BadTracking, RecordTag.format_error_message('destroyed', 'destroyed', candidate_key_to_store)
+          raise RecordTagExceptions::BadTracking, format_error_message('destroyed', 'destroyed', candidate_key_to_store)
         end
       else # new tag
         RecordTag.create!(record: record, tag: tag, candidate_key: candidate_key_to_store, created_this_session: tag == 'created')

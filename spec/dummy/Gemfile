@@ -1,2 +1,4 @@
 gem 'penman', path: '../../'
 gem 'mysql2'
+gem 'rspec-rails'
+gem 'database_cleaner'
