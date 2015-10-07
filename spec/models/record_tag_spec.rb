@@ -242,13 +242,16 @@ def run_seed_spec_for_model(model, default_attributes)
   end
 
   it 'should not leave a record around with an old candidate_key if updated' do
+    # just in case the record existed before this test
+    model.find_by(make_candidate_key_hash(model, model_candidate_key, 1)).try(:delete)
+    model.find_by(make_candidate_key_hash(model, model_candidate_key, 2)).try(:delete)
+
     record = model.find_or_create_by!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
     record.update!(make_candidate_key_hash(model, model_candidate_key, 2))
     seed_files = RecordTag.generate_seed_for_model(model)
 
-    record.destroy
+    record.destroy!
     model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
-
     run_seed(seed_files)
 
     expect(model.find_by(make_candidate_key_hash(model, model_candidate_key, 1))).to be_nil
