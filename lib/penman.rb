@@ -27,4 +27,12 @@ module Penman
   def self.default_candidate_key
     configuration.default_candidate_key
   end
+
+  def self.enable
+    RecordTag.enable
+  end
+
+  def self.disable
+    RecordTag.disable
+  end
 end
