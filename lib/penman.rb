@@ -35,4 +35,8 @@ module Penman
   def self.disable
     RecordTag.disable
   end
+
+  def self.generate_seeds
+    RecordTag.generate_seeds
+  end
 end
