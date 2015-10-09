@@ -376,8 +376,8 @@ def run_seed_spec_for_model(model, default_attributes)
 end
 
 describe RecordTag do
-  before(:all) { RecordTag.enable }
-  after(:all) { RecordTag.disable }
+  before(:all) { Penman.enable }
+  after(:all) { Penman.disable }
 
   before do
     DatabaseCleaner.start
