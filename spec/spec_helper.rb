@@ -7,9 +7,9 @@ def run_seed(seed_files, num_times_to_run = 1)
     seed_class_name = File.basename(file_name, '.*').delete('0-9').camelcase
     seed = seed_class_name.constantize.new
 
-    RecordTag.disable
-    num_times_to_run.times { seed.up }
-    RecordTag.enable
+    Penman.disable
+    num_times_to_run.times { seed.send(Penman.seed_method_name) }
+    Penman.enable
   end
 ensure
   seed_files.each { |f| File.delete(f) }

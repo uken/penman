@@ -14,6 +14,18 @@ module Penman
       end
     end
 
+    describe '.seed_method_name' do
+      before do
+        Penman.configure do |config|
+          config.seed_method_name = :up
+        end
+      end
+
+      it 'should return the configured seed_method_name' do
+        expect(Penman.seed_method_name).to eq(:up)
+      end
+    end
+
     describe ".reset" do
       before :each do
         Penman.configure do |config|
@@ -32,6 +44,12 @@ module Penman
         Penman.reset
         config = Penman.configuration
         expect(config.default_candidate_key).to eq(:reference)
+      end
+
+      it "resets the seed_method_name configuration" do
+        Penman.reset
+        config = Penman.configuration
+        expect(config.seed_method_name).to eq(:change)
       end
     end
   end
