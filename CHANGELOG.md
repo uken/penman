@@ -1,0 +1,11 @@
+### 0.0.6
+- Removes the `Rails.env` check in the `Taggable` module.
+  - This was a holdover from a previous project and shouldn't have been included here. We have `Penman.enable` and `Penman.disable` for this stuff.
+- [Major change](https://github.com/uken/penman/commit/208f0c92d68a5496cb3bbe3e30abe2734e44580f)
+
+### 0.1.6
+- Adds support for custom seed file formatting via an `.erb.` file.
+- `RecordTag` is now wrapped in the `Penman` module.
+- `seed_method_name` config setting has been removed as the erb solution is better.
+- add proper versioning
+- [pull request](https://github.com/uken/penman/pull/1)
