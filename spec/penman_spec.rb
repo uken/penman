@@ -31,25 +31,28 @@ module Penman
         Penman.configure do |config|
           config.seed_path = 'some/path/where/seeds/should/go'
           config.default_candidate_key = :name
+          config.seed_method_name = :some_crazy_name
+          config.seed_template_file = 'some_file.erb'
         end
+
+        Penman.reset
+        @config = Penman.config
       end
 
       it "resets the seed_path configuration" do
-        Penman.reset
-        config = Penman.configuration
-        expect(config.seed_path).to eq('db/migrate')
+        expect(@config.seed_path).to eq('db/migrate')
       end
 
       it "resets the default_candidate_key configuration" do
-        Penman.reset
-        config = Penman.configuration
-        expect(config.default_candidate_key).to eq(:reference)
+        expect(@config.default_candidate_key).to eq(:reference)
       end
 
       it "resets the seed_method_name configuration" do
-        Penman.reset
-        config = Penman.configuration
-        expect(config.seed_method_name).to eq(:change)
+        expect(@config.seed_method_name).to eq(:change)
+      end
+
+      it "resets the seed_template_file configuration" do
+        expect(@config.seed_template_file).to be_nil
       end
     end
   end
