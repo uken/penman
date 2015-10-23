@@ -29,10 +29,6 @@ module Penman
     config.default_candidate_key
   end
 
-  def self.seed_method_name
-    config.seed_method_name.to_sym
-  end
-
   def self.enable
     RecordTag.enable
   end

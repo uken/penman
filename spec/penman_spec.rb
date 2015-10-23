@@ -14,24 +14,11 @@ module Penman
       end
     end
 
-    describe '.seed_method_name' do
-      before do
-        Penman.configure do |config|
-          config.seed_method_name = :up
-        end
-      end
-
-      it 'should return the configured seed_method_name' do
-        expect(Penman.seed_method_name).to eq(:up)
-      end
-    end
-
     describe ".reset" do
       before :each do
         Penman.configure do |config|
           config.seed_path = 'some/path/where/seeds/should/go'
           config.default_candidate_key = :name
-          config.seed_method_name = :some_crazy_name
           config.seed_template_file = 'some_file.erb'
         end
 
@@ -45,10 +32,6 @@ module Penman
 
       it "resets the default_candidate_key configuration" do
         expect(@config.default_candidate_key).to eq(:reference)
-      end
-
-      it "resets the seed_method_name configuration" do
-        expect(@config.seed_method_name).to eq(:change)
       end
 
       it "resets the seed_template_file configuration" do

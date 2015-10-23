@@ -15,10 +15,6 @@ module Penman
           expect(@config.default_candidate_key).to eq(:name)
         end
 
-        it "should have a value of 'change' by default for seed_method_name" do
-          expect(@config.seed_method_name).to eq(:change)
-        end
-
         it 'should have a default nil value for the seed template file' do
           expect(@config.seed_template_file).to match(/default.rb.erb/)
         end
@@ -34,14 +30,9 @@ module Penman
         expect(@config.default_candidate_key).to eq(:some_other_attribute)
       end
 
-      it 'should support seed_method_name configuration' do
-        @config.seed_method_name = :up
-        expect(@config.seed_method_name).to eq(:up)
-      end
-
       it 'should support seed_template_file configuration' do
-        @config.seed_method_name = :up
-        expect(@config.seed_method_name).to eq(:up)
+        @config.seed_template_file = 'some_file'
+        expect(@config.seed_template_file).to eq('some_file')
       end
     end
   end
