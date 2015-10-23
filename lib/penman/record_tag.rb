@@ -180,46 +180,39 @@ module Penman
       def generate_update_seed(model, timestamp)
         touched_tags = RecordTag.where(record_type: model.name, tag: ['created', 'updated']).includes(:record)
         return nil if touched_tags.empty?
-        seed_code_io = StringIO.new
+        seed_code = []
 
         touched_tags.each do |tag|
-          seed_code_io.puts "\n"
-          seed_code_io.puts "    # Generating seed for #{tag.tag.upcase} tag."
-          seed_code_io.print  "    record = #{model.name}.find_by("
-          seed_code_io.print print_candidate_key(tag.record)
-          seed_code_io.puts  ')'
+          seed_code << "# Generating seed for #{tag.tag.upcase} tag."
+          seed_code << "record = #{model.name}.find_by(#{print_candidate_key(tag.record)})"
+          seed_code << "record = #{model.name}.find_or_initialize_by(#{attribute_string_from_hash(model, tag.candidate_key)})"
 
-          seed_code_io.print  "    record = #{model.name}.find_or_initialize_by("
-          seed_code_io.print attribute_string_from_hash(model, tag.candidate_key)
-          seed_code_io.puts ') if record.nil?'
+          column_hash = Hash[
+            model.attribute_names
+                 .reject { |col| col == model.primary_key }
+                 .map { |col| [col, tag.record.send(col)] }
+          ]
 
-          seed_code_io.print "    record.update!("
-          column_hash = {}
-          model.attribute_names.reject { |col| col == model.primary_key }
-                               .each { |col| column_hash[col] = tag.record.send(col) }
-          seed_code_io.print attribute_string_from_hash(model, column_hash)
-          seed_code_io.puts ')'
+          seed_code << "record.update!(#{attribute_string_from_hash(model, column_hash)})"
         end
 
         seed_file_name = "#{model.name.underscore.pluralize}_updates" # TODO setup custom filename
-        sfg = SeedFileGenerator.new(seed_file_name, timestamp, seed_code_io.string)
+        sfg = SeedFileGenerator.new(seed_file_name, timestamp, seed_code)
         sfg.write_seed
       end
 
       def generate_destroy_seed(model, timestamp)
         destroyed_tags = RecordTag.where(record_type: model.name, tag: 'destroyed')
         return nil if destroyed_tags.empty?
-        seed_code_io = StringIO.new
+        seed_code = []
 
         destroyed_tags.map(&:candidate_key).each do |record_candidate_key|
-          seed_code_io.puts "\n"
-          seed_code_io.print "    record = #{model.name}.find_by("
-          seed_code_io.puts "#{attribute_string_from_hash(model, record_candidate_key)})"
-          seed_code_io.puts "    record.try(:destroy)"
+          seed_code << "record = #{model.name}.find_by(#{attribute_string_from_hash(model, record_candidate_key)})"
+          seed_code << "record.try(:destroy)"
         end
 
         seed_file_name = "#{model.name.underscore.pluralize}_destroys" # TODO setup custom filename
-        sfg = SeedFileGenerator.new(seed_file_name, timestamp, seed_code_io.string)
+        sfg = SeedFileGenerator.new(seed_file_name, timestamp, seed_code)
         sfg.write_seed
       end
 
