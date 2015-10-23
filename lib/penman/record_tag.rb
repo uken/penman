@@ -1,6 +1,7 @@
 require 'active_record'
 require 'penman/penman_exceptions'
 require 'penman/seed_file_generator'
+require 'penman/seed_code'
 
 module Penman
   class RecordTag < ActiveRecord::Base
@@ -180,7 +181,7 @@ module Penman
       def generate_update_seed(model, timestamp)
         touched_tags = RecordTag.where(record_type: model.name, tag: ['created', 'updated']).includes(:record)
         return nil if touched_tags.empty?
-        seed_code = []
+        seed_code = SeedCode.new
 
         touched_tags.each do |tag|
           seed_code << "# Generating seed for #{tag.tag.upcase} tag."
@@ -204,7 +205,7 @@ module Penman
       def generate_destroy_seed(model, timestamp)
         destroyed_tags = RecordTag.where(record_type: model.name, tag: 'destroyed')
         return nil if destroyed_tags.empty?
-        seed_code = []
+        seed_code = SeedCode.new
 
         destroyed_tags.map(&:candidate_key).each do |record_candidate_key|
           seed_code << "record = #{model.name}.find_by(#{attribute_string_from_hash(model, record_candidate_key)})"
