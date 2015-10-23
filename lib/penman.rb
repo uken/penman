@@ -2,18 +2,19 @@ require "penman/engine"
 require 'penman/configuration'
 require 'penman/record_tag'
 require 'penman/taggable'
+require 'penman/seed_file_generator'
 
 module Penman
   class << self
     attr_writer :config
   end
 
-  def self.configuration
+  def self.config
     @config ||= Configuration.new
   end
 
   def self.configure
-    yield(configuration)
+    yield(config)
   end
 
   def self.reset
@@ -21,15 +22,11 @@ module Penman
   end
 
   def self.seed_path
-    configuration.seed_path
+    config.seed_path
   end
 
   def self.default_candidate_key
-    configuration.default_candidate_key
-  end
-
-  def self.seed_method_name
-    configuration.seed_method_name.to_sym
+    config.default_candidate_key
   end
 
   def self.enable

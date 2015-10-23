@@ -8,7 +8,7 @@ def run_seed(seed_files, num_times_to_run = 1)
     seed = seed_class_name.constantize.new
 
     Penman.disable
-    num_times_to_run.times { seed.send(Penman.seed_method_name) }
+    num_times_to_run.times { seed.send(:change) }
     Penman.enable
   end
 ensure

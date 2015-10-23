@@ -44,7 +44,7 @@ def find_or_create_with_tag(model, hash)
   record = model.find_or_create_by!(hash)
 
   # just in case the record already existed
-  RecordTag.tag(record, 'created') unless RecordTag.find_by(record: record).present?
+  Penman::RecordTag.tag(record, 'created') unless Penman::RecordTag.find_by(record: record).present?
 
   record
 end
@@ -53,7 +53,7 @@ def simulate_record_having_been_present_previously(model, attributes)
   record = model.find_by(attributes)
   found_record = record.present?
   record = model.create!(attributes) unless found_record
-  RecordTag.find_by(record: record).try(:destroy) # simulate record having been present previously if it was not
+  Penman::RecordTag.find_by(record: record).try(:destroy) # simulate record having been present previously if it was not
   record
 end
 
@@ -73,7 +73,7 @@ def run_seed_spec_for_model(model, default_attributes)
   it 'should handle a single record tagged touched' do
     record = find_or_create_with_tag(
       model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
-    seed_files = RecordTag.generate_seed_for_model(model)
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
     record.destroy
 
     run_seed(seed_files)
@@ -89,7 +89,7 @@ def run_seed_spec_for_model(model, default_attributes)
         model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, i)))
     end
 
-    seed_files = RecordTag.generate_seed_for_model(model)
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
     records.map(&:destroy)
     run_seed(seed_files)
     records = []
@@ -106,9 +106,9 @@ def run_seed_spec_for_model(model, default_attributes)
   it 'should handle a single record tagged destroyed' do
     record = model.find_or_create_by!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
     # simulate a record that was present before changes we made
-    RecordTag.find_by(record: record, tag: 'created').try(:destroy)
+    Penman::RecordTag.find_by(record: record, tag: 'created').try(:destroy)
     record.destroy
-    seed_files = RecordTag.generate_seed_for_model(model)
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
     # simulate an environement that has the record
     model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
 
@@ -129,9 +129,9 @@ def run_seed_spec_for_model(model, default_attributes)
 
     records = record_attributes.map { |ra| model.find_or_create_by!(ra) }
     # simulate the records having been created in a previous seed
-    RecordTag.where(record: records, tag: 'created').destroy_all
+    Penman::RecordTag.where(record: records, tag: 'created').destroy_all
     records.map(&:destroy!) # generate 'destroyed' tags
-    seed_files = RecordTag.generate_seed_for_model(model)
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
     record_attributes.each { |ra| model.find_or_create_by!(ra) } # simulate an environment that has these records
 
     run_seed(seed_files)
@@ -149,7 +149,7 @@ def run_seed_spec_for_model(model, default_attributes)
     # tag touched, remove destroyed tag
     record = model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
 
-    seed_files = RecordTag.generate_seed_for_model(model)
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
     record.destroy
 
     run_seed(seed_files)
@@ -167,12 +167,12 @@ def run_seed_spec_for_model(model, default_attributes)
     end
 
     # simulate records having been present before this seed
-    RecordTag.where(record: [records[2], records[3]], tag: 'created').destroy_all
+    Penman::RecordTag.where(record: [records[2], records[3]], tag: 'created').destroy_all
 
     records[2].destroy
     records[3].destroy
 
-    seed_files = RecordTag.generate_seed_for_model(model)
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
 
     records[0].destroy
     records[1].destroy
@@ -193,7 +193,7 @@ def run_seed_spec_for_model(model, default_attributes)
 
   it 'should not create duplicate records if executed more than once' do
     find_or_create_with_tag(model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
-    seed_files = RecordTag.generate_seed_for_model(model)
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
 
     run_seed(seed_files, 2) # run 2 times
 
@@ -207,7 +207,7 @@ def run_seed_spec_for_model(model, default_attributes)
       model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
     record.update!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 2)))
     record.destroy!
-    seed_files = RecordTag.generate_seed_for_model(model)
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
 
     model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
     run_seed(seed_files)
@@ -220,7 +220,7 @@ def run_seed_spec_for_model(model, default_attributes)
     record = find_or_create_with_tag(
       model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
     record.update!(make_candidate_key_hash(model, model_candidate_key, 2))
-    seed_files = RecordTag.generate_seed_for_model(model)
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
     record.destroy!
     model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
     run_seed(seed_files)
@@ -231,7 +231,7 @@ def run_seed_spec_for_model(model, default_attributes)
   it 'should update the candidate key if changed' do
     record = model.find_or_create_by!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
     record.update!(make_candidate_key_hash(model, model_candidate_key, 2))
-    seed_files = RecordTag.generate_seed_for_model(model)
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
 
     record.destroy
     model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
@@ -248,7 +248,7 @@ def run_seed_spec_for_model(model, default_attributes)
 
     record = model.find_or_create_by!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
     record.update!(make_candidate_key_hash(model, model_candidate_key, 2))
-    seed_files = RecordTag.generate_seed_for_model(model)
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
 
     record.destroy!
     model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
@@ -261,7 +261,7 @@ def run_seed_spec_for_model(model, default_attributes)
     record = find_or_create_with_tag(
       model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
     record.destroy
-    seed_files = RecordTag.generate_seed_for_model(model)
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
     run_seed(seed_files)
     expect(model.find_by(make_candidate_key_hash(model, model_candidate_key))).to be_nil
   end
@@ -271,14 +271,14 @@ def run_seed_spec_for_model(model, default_attributes)
       model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
     record.update!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 2)))
     record.destroy!
-    expect(RecordTag.find_by(record: record, tag: 'updated')).to be_nil
+    expect(Penman::RecordTag.find_by(record: record, tag: 'updated')).to be_nil
   end
 
   it 'should result in no tags if a record is created then destroyed' do
     model.find_by(make_candidate_key_hash(model, model_candidate_key)).try(:delete)
     record = model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
     record.destroy!
-    expect(RecordTag.find_by(record: record)).to be_nil
+    expect(Penman::RecordTag.find_by(record: record)).to be_nil
   end
 
   it 'should result in an updated tag if a record is destroyed then created' do
@@ -286,7 +286,7 @@ def run_seed_spec_for_model(model, default_attributes)
       model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
     record.destroy!
     record = model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
-    expect(RecordTag.find_by(record: record, tag: 'updated')).to_not be_nil
+    expect(Penman::RecordTag.find_by(record: record, tag: 'updated')).to_not be_nil
   end
 
   belongs_to_associations = model.reflect_on_all_associations(:belongs_to)
@@ -315,7 +315,7 @@ def run_seed_spec_for_model(model, default_attributes)
     #       expect(assoc_1.id != assoc_2.id) # otherwise this test would be useless
     #       record = model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1, associated_model)).merge( { association.name => assoc_1 } ))
 
-    #       seed_files = RecordTag.generate_seed_for_model(model)
+    #       seed_files = Penman::RecordTag.generate_seed_for_model(model)
 
     #       record.destroy
     #       assoc_1_key = {}
@@ -344,10 +344,10 @@ def run_seed_spec_for_model(model, default_attributes)
          "the foreign key isn't consistent between environments" do
         record = find_or_create_with_tag(
           model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
-        seed_files = RecordTag.generate_seed_for_model(model)
+        seed_files = Penman::RecordTag.generate_seed_for_model(model)
 
-        # disable while we setup the environment so RecordTags doesn't compain about all the weird stuff we're doing
-        RecordTag.disable
+        # disable while we setup the environment so Penman::RecordTags doesn't compain about all the weird stuff we're doing
+        Penman::RecordTag.disable
         associated_record = record.send(reflection.name)
         original_associated_record_id = associated_record.id
         associated_record = copy_to_new_record(associated_record)
@@ -359,7 +359,7 @@ def run_seed_spec_for_model(model, default_attributes)
           record.destroy!
         end
 
-        RecordTag.enable
+        Penman::RecordTag.enable
         expect { run_seed(seed_files) }.to_not raise_error
 
         candidate_key_hash = make_candidate_key_hash(model, model_candidate_key)
@@ -375,7 +375,7 @@ def run_seed_spec_for_model(model, default_attributes)
   end
 end
 
-describe RecordTag do
+describe Penman::RecordTag do
   before(:all) { Penman.enable }
   after(:all) { Penman.disable }
 
@@ -394,7 +394,7 @@ describe RecordTag do
 
     it 'should remove any created tags for a record if it is being tagged destroyed' do
       record.destroy!
-      expect(RecordTag.find_by(record_type: 'Weapon', record_id: record.id, tag: 'created')).to be_nil
+      expect(Penman::RecordTag.find_by(record_type: 'Weapon', record_id: record.id, tag: 'created')).to be_nil
     end
 
     it 'should replace destroyed tags for a record if it is being created again' do
@@ -403,22 +403,22 @@ describe RecordTag do
       original_record_id = record.id
       record.destroy!
       second_record = Weapon.create!(reference: 'some_other_weapon', damage_factor: 1, category: 'some_category', ranged: true)
-      expect(RecordTag.find_by(record_type: 'Weapon', record_id: original_record_id, tag: 'destroyed',
+      expect(Penman::RecordTag.find_by(record_type: 'Weapon', record_id: original_record_id, tag: 'destroyed',
                                candidate_key: '{"reference":"some_other_weapon"}')).to be_nil
-      expect(RecordTag.find_by(record_type: 'Weapon', record_id: second_record, tag: 'created',
+      expect(Penman::RecordTag.find_by(record_type: 'Weapon', record_id: second_record, tag: 'created',
                                candidate_key: '{"reference":"some_other_weapon"}')).not_to be_nil
     end
 
     it 'should destroy an updated tag if the record was created this session' do
       record.update!(reference: 'some_other_weapon')
       record.destroy!
-      expect(RecordTag.find_by(record: record)).to be_nil
+      expect(Penman::RecordTag.find_by(record: record)).to be_nil
     end
 
     it 'should not destroy an updated tag if the record was not created this session' do
-      RecordTag.find_by(record: record).destroy!
+      Penman::RecordTag.find_by(record: record).destroy!
       record.update!(reference: 'some_other_weapon')
-      expect(RecordTag.find_by(record: record)).to_not be_nil
+      expect(Penman::RecordTag.find_by(record: record)).to_not be_nil
     end
   end
 
@@ -427,7 +427,7 @@ describe RecordTag do
     # types that we are interested in at the moment
     it 'should seed a simple model with numbers' do
       weapon = Weapon.create(reference: 'new_weapon', category: 'name', category: 'some_category', damage_factor: 100)
-      seed_files = RecordTag.generate_seed_for_model(Weapon)
+      seed_files = Penman::RecordTag.generate_seed_for_model(Weapon)
       # simulate an environment in which this weapon does not exist
       # (ie. as if we had generated the seed on a design env and seeded on prod)
       weapon.destroy
@@ -442,7 +442,7 @@ describe RecordTag do
 
     it 'should seed a simple model with strings' do
       weapon = Weapon.create(reference: 'new_weapon', category: 'some_category')
-      seed_files = RecordTag.generate_seed_for_model(Weapon)
+      seed_files = Penman::RecordTag.generate_seed_for_model(Weapon)
       weapon.destroy
 
       run_seed(seed_files)
@@ -454,7 +454,7 @@ describe RecordTag do
 
     it 'should seed a simple model with nil values' do
       weapon = Weapon.create(reference: 'new_weapon', category: 'some_category', damage_factor: nil)
-      seed_files = RecordTag.generate_seed_for_model(Weapon)
+      seed_files = Penman::RecordTag.generate_seed_for_model(Weapon)
       weapon.destroy
 
       run_seed(seed_files)
@@ -467,7 +467,7 @@ describe RecordTag do
     it 'should seed a simple model with times' do
       weapon = Weapon.create(reference: 'new_weapon', category: 'some_category')
       updated_at = weapon.updated_at
-      seed_files = RecordTag.generate_seed_for_model(Weapon)
+      seed_files = Penman::RecordTag.generate_seed_for_model(Weapon)
       weapon.destroy
 
       run_seed(seed_files)
@@ -479,7 +479,7 @@ describe RecordTag do
 
     it 'should seed a simple model with booleans' do
       weapon = Weapon.create(reference: 'new_weapon', category: 'some_category', ranged: false)
-      seed_files = RecordTag.generate_seed_for_model(Weapon)
+      seed_files = Penman::RecordTag.generate_seed_for_model(Weapon)
       weapon.destroy
 
       run_seed(seed_files)
@@ -491,7 +491,7 @@ describe RecordTag do
 
     it 'should seed a simple model with associations' do
       item = Item.create(reference: 'new_item', asset: Asset.first)
-      seed_files = RecordTag.generate_seed_for_model(Item)
+      seed_files = Penman::RecordTag.generate_seed_for_model(Item)
       item.destroy
 
       run_seed(seed_files)
@@ -504,7 +504,7 @@ describe RecordTag do
     it 'should seed a simple model with the default candidate key' do
       item = Item.create(reference: 'new_item')
 
-      seed_files = RecordTag.generate_seed_for_model(Item)
+      seed_files = Penman::RecordTag.generate_seed_for_model(Item)
       item.destroy
 
       run_seed(seed_files)
@@ -515,7 +515,7 @@ describe RecordTag do
 
     it 'should seed a simple model with a non-default candidate key' do
       player = Player.create(name: 'new_player')
-      seed_files = RecordTag.generate_seed_for_model(Player)
+      seed_files = Penman::RecordTag.generate_seed_for_model(Player)
       player.destroy
 
       run_seed(seed_files)
@@ -527,7 +527,7 @@ describe RecordTag do
 
   # TODO: Create a number of chained relations like these:
   # describe '.seed_order' do
-  #   let(:seed_order) { RecordTag.seed_order }
+  #   let(:seed_order) { Penman::RecordTag.seed_order }
 
   #   it 'should order Collectible before CollectionMember' do
   #     expect(seed_order.find_index(Collectible)).to be < seed_order.find_index(CollectionMember)
@@ -553,21 +553,21 @@ describe RecordTag do
   describe '.create_custom' do
     it 'should create a custom tag using the provided values' do
       attributes = { record_type: 'Probably_a_yaml', tag: 'tag', candidate_key: 'candidate_key' }
-      RecordTag.create_custom attributes
-      expect(RecordTag.find_by(attributes)).not_to be_nil
+      Penman::RecordTag.create_custom attributes
+      expect(Penman::RecordTag.find_by(attributes)).not_to be_nil
     end
 
     it 'should fill in default values for those not provided' do
-      RecordTag.create_custom(record_type: 'Probably_a_yaml')
-      expect(RecordTag.find_by(record_type: 'Probably_a_yaml', tag: 'touched', candidate_key: 'n/a')).not_to be_nil
+      Penman::RecordTag.create_custom(record_type: 'Probably_a_yaml')
+      expect(Penman::RecordTag.find_by(record_type: 'Probably_a_yaml', tag: 'touched', candidate_key: 'n/a')).not_to be_nil
     end
 
     it 'should not create more than one tag if called multiple times with the same attributes' do
-      RecordTag.create_custom(record_type: 'Probably_a_yaml')
-      RecordTag.create_custom(record_type: 'Probably_a_yaml')
-      RecordTag.create_custom(record_type: 'Probably_a_yaml')
-      RecordTag.create_custom(record_type: 'Probably_a_yaml')
-      expect(RecordTag.where(record_type: 'Probably_a_yaml').count).to eq(1)
+      Penman::RecordTag.create_custom(record_type: 'Probably_a_yaml')
+      Penman::RecordTag.create_custom(record_type: 'Probably_a_yaml')
+      Penman::RecordTag.create_custom(record_type: 'Probably_a_yaml')
+      Penman::RecordTag.create_custom(record_type: 'Probably_a_yaml')
+      expect(Penman::RecordTag.where(record_type: 'Probably_a_yaml').count).to eq(1)
     end
   end
 
@@ -585,8 +585,8 @@ describe RecordTag do
   #     dungeon.update!(reference: "#{dungeon.reference}_something_to_make_it_different")
   #     zone.update!(name: "#{zone_name}_something_to_make_it_different")
 
-  #     seed_files = RecordTag.generate_seed_for_model(Zone)
-  #     seed_files |= RecordTag.generate_seed_for_model(Dungeon)
+  #     seed_files = Penman::RecordTag.generate_seed_for_model(Zone)
+  #     seed_files |= Penman::RecordTag.generate_seed_for_model(Dungeon)
 
   #     # set these back to what they were to simulate the state on the environment to be seeded
   #     dungeon.update!(reference: dungeon_ref)
