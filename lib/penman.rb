@@ -2,6 +2,7 @@ require "penman/engine"
 require 'penman/configuration'
 require 'penman/record_tag'
 require 'penman/taggable'
+require 'penman/seed_file_generator'
 
 module Penman
   class << self

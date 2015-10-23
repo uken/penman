@@ -52,7 +52,7 @@ module Penman
       end
 
       it "resets the seed_template_file configuration" do
-        expect(@config.seed_template_file).to be_nil
+        expect(@config.seed_template_file).to match(/default.rb.erb/)
       end
     end
   end

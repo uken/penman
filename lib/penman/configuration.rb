@@ -9,7 +9,9 @@ module Penman
       @seed_path = 'db/migrate'
       @default_candidate_key = :reference
       @seed_method_name = :change
-      @seed_template_file = nil
+
+      root = File.expand_path '../..', __FILE__
+      @seed_template_file = File.join(root, 'templates', 'default.rb.erb')
     end
   end
 end

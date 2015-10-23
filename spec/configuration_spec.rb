@@ -20,7 +20,7 @@ module Penman
         end
 
         it 'should have a default nil value for the seed template file' do
-          expect(@config.seed_template_file).to be_nil
+          expect(@config.seed_template_file).to match(/default.rb.erb/)
         end
       end
 
