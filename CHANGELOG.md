@@ -9,3 +9,9 @@
 - `seed_method_name` config setting has been removed as the erb solution is better.
 - add proper versioning
 - [pull request](https://github.com/uken/penman/pull/1)
+
+### 0.2.6
+- Adds `Penman.enabled?`
+- Adds configuration for the `file_name_formatter` method, allowing users to format their file names as they see fit.
+- Removes `Penman.seed_path` and `Penman.default_candidate_key` as these can be easily accessed through `Penman.config.*`
+- [pull request](https://github.com/uken/penman/pull/2)

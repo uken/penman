@@ -12,7 +12,7 @@ module Penman
 
     def write_seed
       erb = ERB.new(File.read(Penman.config.seed_template_file))
-      seed_file_name = "#{@timestamp}_#{@file_name}.rb" # TODO config a file name formatter
+      seed_file_name = "#{@timestamp}_#{@file_name}.rb"
       full_seed_file_path = File.join(Penman.config.seed_path, seed_file_name)
       IO.write(full_seed_file_path, erb.result(binding))
       full_seed_file_path

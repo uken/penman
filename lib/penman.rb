@@ -21,20 +21,16 @@ module Penman
     @config = Configuration.new
   end
 
-  def self.seed_path
-    config.seed_path
-  end
-
-  def self.default_candidate_key
-    config.default_candidate_key
-  end
-
   def self.enable
     RecordTag.enable
   end
 
   def self.disable
     RecordTag.disable
+  end
+
+  def self.enabled?
+    RecordTag.enabled?
   end
 
   def self.generate_seeds
