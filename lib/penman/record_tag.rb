@@ -45,6 +45,10 @@ module Penman
         @@enabled = true
       end
 
+      def enabled?
+        @@enabled
+      end
+
       def register(model)
         reflections = model.reflect_on_all_associations(:belongs_to)
 

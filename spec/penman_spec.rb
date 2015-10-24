@@ -14,7 +14,7 @@ module Penman
       end
     end
 
-    describe ".reset" do
+    describe '.reset' do
       before :each do
         Penman.configure do |config|
           config.seed_path = 'some/path/where/seeds/should/go'
@@ -26,16 +26,28 @@ module Penman
         @config = Penman.config
       end
 
-      it "resets the seed_path configuration" do
+      it 'resets the seed_path configuration' do
         expect(@config.seed_path).to eq('db/migrate')
       end
 
-      it "resets the default_candidate_key configuration" do
+      it 'resets the default_candidate_key configuration' do
         expect(@config.default_candidate_key).to eq(:reference)
       end
 
-      it "resets the seed_template_file configuration" do
+      it 'resets the seed_template_file configuration' do
         expect(@config.seed_template_file).to match(/default.rb.erb/)
+      end
+    end
+
+    describe '.enabled' do
+      it 'should return true if Penman is enabled' do
+        Penman.enable
+        expect(Penman.enabled?).to be true
+      end
+
+      it 'shoud return false if Penman is disabled' do
+        Penman.disable
+        expect(Penman.enabled?).to be false
       end
     end
   end
