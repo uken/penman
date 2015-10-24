@@ -186,6 +186,8 @@ module Penman
         touched_tags = RecordTag.where(record_type: model.name, tag: ['created', 'updated']).includes(:record)
         return nil if touched_tags.empty?
         seed_code = SeedCode.new
+        seed_code << 'penman_initially_enabled = Penman.enabled?'
+        seed_code << 'Penman.disable'
 
         touched_tags.each do |tag|
           seed_code << "# Generating seed for #{tag.tag.upcase} tag."
@@ -201,6 +203,7 @@ module Penman
           seed_code << "record.update!(#{attribute_string_from_hash(model, column_hash)})"
         end
 
+        seed_code << 'Penman.enable if penman_initially_enabled'
         seed_file_name = "#{model.name.underscore.pluralize}_updates" # TODO setup custom filename
         sfg = SeedFileGenerator.new(seed_file_name, timestamp, seed_code)
         sfg.write_seed
@@ -210,12 +213,15 @@ module Penman
         destroyed_tags = RecordTag.where(record_type: model.name, tag: 'destroyed')
         return nil if destroyed_tags.empty?
         seed_code = SeedCode.new
+        seed_code << 'penman_initially_enabled = Penman.enabled?'
+        seed_code << 'Penman.disable'
 
         destroyed_tags.map(&:candidate_key).each do |record_candidate_key|
           seed_code << "record = #{model.name}.find_by(#{attribute_string_from_hash(model, record_candidate_key)})"
           seed_code << "record.try(:destroy)"
         end
 
+        seed_code << 'Penman.enable if penman_initially_enabled'
         seed_file_name = "#{model.name.underscore.pluralize}_destroys" # TODO setup custom filename
         sfg = SeedFileGenerator.new(seed_file_name, timestamp, seed_code)
         sfg.write_seed
