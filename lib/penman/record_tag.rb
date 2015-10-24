@@ -66,7 +66,7 @@ module Penman
 
       def tag(record, tag)
         return unless @@enabled
-        candidate_key = record.class.try(:candidate_key) || Penman.default_candidate_key
+        candidate_key = record.class.try(:candidate_key) || Penman.config.default_candidate_key
         candidate_key = [candidate_key] unless candidate_key.is_a? Array
         raise RecordTagExceptions::InvalidCandidateKeyForRecord unless record_has_attributes?(record, candidate_key)
 
@@ -222,13 +222,13 @@ module Penman
         end
 
         seed_code << 'Penman.enable if penman_initially_enabled'
-        seed_file_name = "#{model.name.underscore.pluralize}_destroys" # TODO setup custom filename
+        seed_file_name = Penman.config.file_name_formatter.call(model.name, 'destroys')
         sfg = SeedFileGenerator.new(seed_file_name, timestamp, seed_code)
         sfg.write_seed
       end
 
       def print_candidate_key(record)
-        candidate_key = record.class.try(:candidate_key) || Penman.default_candidate_key
+        candidate_key = record.class.try(:candidate_key) || Penman.config.default_candidate_key
         candidate_key = [candidate_key] unless candidate_key.is_a? Array
         raise RecordTagExceptions::InvalidCandidateKeyForRecord unless record_has_attributes?(record, candidate_key)
 
