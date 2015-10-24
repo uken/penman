@@ -204,7 +204,7 @@ module Penman
         end
 
         seed_code << 'Penman.enable if penman_initially_enabled'
-        seed_file_name = "#{model.name.underscore.pluralize}_updates" # TODO setup custom filename
+        seed_file_name = Penman.config.file_name_formatter.call(model.name, 'updates')
         sfg = SeedFileGenerator.new(seed_file_name, timestamp, seed_code)
         sfg.write_seed
       end
