@@ -11,9 +11,7 @@ Gem::Specification.new do |s|
   s.email       = ['matpataki@gmail.com']
   s.homepage    = 'http://uken.com'
   s.summary     = 'Tracks database changes and generates representative seed files.'
-  s.description = 'Penman will keep track of database changes on models that you mark as `Taggable`.'\
-                  'Once the changes are ready to be propogated to other environments, a penman will generate a seed file '\
-                  'representing those changes.'
+  s.description = 'A scribe for your database and Rails project, Penman records your DB changes and produces seed files that reflect them.'
   s.license     = 'MIT'
 
   s.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.rdoc']
