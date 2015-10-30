@@ -20,3 +20,7 @@
 - Fix bug for a case where a relation is defined between two models where the foreign key is not the primary key.
 - Thanks to @jayvan for this fix.
 - [pull request](https://github.com/uken/penman/pull/3)
+
+### 0.2.8
+- Adds back a check printed in the seeds files that allow the seeds to be safely run in environments where they were generated.
+- [pull request](https://github.com/uken/penman/pull/4)
