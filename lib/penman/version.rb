@@ -1,6 +1,6 @@
 module Penman
   MAJOR = 0     # api
-  MINOR = 2     # features
+  MINOR = 3     # features
   PATCH = 6     # bug fixes
   BUILD = nil   # beta, rc1, etc
 

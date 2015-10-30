@@ -15,3 +15,6 @@
 - Adds configuration for the `file_name_formatter` method, allowing users to format their file names as they see fit.
 - Removes `Penman.seed_path` and `Penman.default_candidate_key` as these can be easily accessed through `Penman.config.*`
 - [pull request](https://github.com/uken/penman/pull/2)
+
+### 0.3.6
+- Adds the `after_generate` configurable callback that is to be used to add generated seeds to a migrations table of the user's choice.
