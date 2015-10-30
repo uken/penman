@@ -252,7 +252,8 @@ module Penman
             end
 
             if associated_model.ancestors.include?(Taggable) || associated_model.respond_to?(:candidate_key)
-              associated_record = associated_model.find_by(associated_model.primary_key => v)
+              primary_key = reflection.options[:primary_key] || associated_model.primary_key
+              associated_record = associated_model.find_by(primary_key => v)
               to_add = "#{reflection.name}: #{associated_model.name}.find_by("
 
               if associated_record.present?

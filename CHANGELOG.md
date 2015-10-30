@@ -15,3 +15,8 @@
 - Adds configuration for the `file_name_formatter` method, allowing users to format their file names as they see fit.
 - Removes `Penman.seed_path` and `Penman.default_candidate_key` as these can be easily accessed through `Penman.config.*`
 - [pull request](https://github.com/uken/penman/pull/2)
+
+### 0.2.7
+- Fix bug for a case where a relation is defined between two models where the foreign key is not the primary key.
+- Thanks to @jayvan for this fix.
+- [pull request](https://github.com/uken/penman/pull/3)
