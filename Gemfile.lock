@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    penman (0.1.6)
+    penman (0.2.6)
       rails (~> 4)
 
 GEM
@@ -130,11 +130,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  database_cleaner
-  mysql2 (~> 0.3.18)
+  database_cleaner (~> 1.5, >= 1.5.1)
+  mysql2 (~> 0.3, >= 0.3.18)
   penman!
-  pry-rails
-  rspec-rails
+  pry-rails (~> 0.3, >= 0.3.4)
+  rspec-rails (~> 3.3, >= 3.3.3)
 
 BUNDLED WITH
    1.10.6
