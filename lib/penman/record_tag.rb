@@ -192,7 +192,7 @@ module Penman
         touched_tags.each do |tag|
           seed_code << "# Generating seed for #{tag.tag.upcase} tag."
           seed_code << "record = #{model.name}.find_by(#{print_candidate_key(tag.record)})"
-          seed_code << "record = #{model.name}.find_or_initialize_by(#{attribute_string_from_hash(model, tag.candidate_key)})"
+          seed_code << "record = #{model.name}.find_or_initialize_by(#{attribute_string_from_hash(model, tag.candidate_key)}) if record.nil?"
 
           column_hash = Hash[
             model.attribute_names
