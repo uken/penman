@@ -19,3 +19,4 @@
 ### 0.2.7
 - Fix bug for a case where a relation is defined between two models where the foreign key is not the primary key.
 - Thanks to @jayvan for this fix.
+- [pull request](https://github.com/uken/penman/pull/3)
