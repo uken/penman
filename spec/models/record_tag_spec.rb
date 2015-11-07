@@ -528,12 +528,12 @@ describe Penman::RecordTag do
   describe '.seed_order' do
     before do
       # TODO remove these references to models once the issue if fixed.
+      SkillEffect2
       MultiSet
       MultiSetMember
       SkillType
       Skill
       SkillEffect
-      SkillEffect2
       InventoryItem
       Player
       Item
@@ -558,13 +558,14 @@ describe Penman::RecordTag do
       expect(@seed_order.find_index(Item)).to be < inventory_item_index
     end
 
-    # it "shouldn't matter if Taggable is included before or after the association is defined in the model" do
-    #   skill_index = @seed_order.find_index(Skill)
-    #   skill_effect_index = @seed_order.find_index(SkillEffect)
-    #   skill_effect_2_index = @seed_order.find_index(SkillEffect2)
-    #   expect(skill_index).to be < skill_effect_2_index
-    #   expect(skill_index).to be < skill_effect_index # expect this to fail until the issue is fixed
-    # end
+    it "shouldn't matter if Taggable is included before or after the association is defined in the model" do
+      skill_index = @seed_order.find_index(Skill)
+      skill_effect_index = @seed_order.find_index(SkillEffect)
+      skill_effect_2_index = @seed_order.find_index(SkillEffect2)
+      binding.pry
+      expect(skill_index).to be < skill_effect_index
+      expect(skill_index).to be < skill_effect_2_index # expect this to fail until the issue is fixed
+    end
   end
 
   describe '.create_custom' do
