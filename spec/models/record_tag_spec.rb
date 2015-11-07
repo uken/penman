@@ -426,7 +426,7 @@ describe Penman::RecordTag do
     # we will start by testing the weapon model being that it has all of the primitive
     # types that we are interested in at the moment
     it 'should seed a simple model with numbers' do
-      weapon = Weapon.create(reference: 'new_weapon', category: 'name', category: 'some_category', damage_factor: 100)
+      weapon = Weapon.create(reference: 'new_weapon', category: 'some_category', damage_factor: 100)
       seed_files = Penman::RecordTag.generate_seed_for_model(Weapon)
       # simulate an environment in which this weapon does not exist
       # (ie. as if we had generated the seed on a design env and seeded on prod)
