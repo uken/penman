@@ -1,7 +1,7 @@
 PATH
   remote: ../../
   specs:
-    penman (0.0.5)
+    penman (0.2.8)
       rails (~> 4)
 
 GEM
