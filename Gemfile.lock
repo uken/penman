@@ -1,12 +1,8 @@
 PATH
   remote: .
   specs:
-<<<<<<< HEAD
     penman (0.2.6)
-=======
-    penman (0.2.8)
->>>>>>> master
-      rails (~> 4)
+    rails (~> 4)
 
 GEM
   remote: https://rubygems.org/
