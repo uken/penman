@@ -426,7 +426,7 @@ describe Penman::RecordTag do
     # we will start by testing the weapon model being that it has all of the primitive
     # types that we are interested in at the moment
     it 'should seed a simple model with numbers' do
-      weapon = Weapon.create(reference: 'new_weapon', category: 'name', category: 'some_category', damage_factor: 100)
+      weapon = Weapon.create(reference: 'new_weapon', category: 'some_category', damage_factor: 100)
       seed_files = Penman::RecordTag.generate_seed_for_model(Weapon)
       # simulate an environment in which this weapon does not exist
       # (ie. as if we had generated the seed on a design env and seeded on prod)
@@ -525,30 +525,47 @@ describe Penman::RecordTag do
     end
   end
 
-  # TODO: Create a number of chained relations like these:
-  # describe '.seed_order' do
-  #   let(:seed_order) { Penman::RecordTag.seed_order }
+  describe '.seed_order' do
+    before do
+      # reference the models so they are loaded and added to the RecordTags's seed order tree
+      SkillEffect2
+      MultiSet
+      MultiSetMember
+      SkillType
+      Skill
+      SkillEffect
+      InventoryItem
+      Player
+      Item
+      @seed_order = Penman::RecordTag.send(:seed_order)
+    end
 
-  #   it 'should order Collectible before CollectionMember' do
-  #     expect(seed_order.find_index(Collectible)).to be < seed_order.find_index(CollectionMember)
-  #   end
+    it 'should order MultiSet before MultiSetMember' do
+      expect(@seed_order.find_index(MultiSet)).to be < @seed_order.find_index(MultiSetMember)
+    end
 
-  #   it 'should order MultiSet before MultiSetMember' do
-  #     expect(seed_order.find_index(MultiSet)).to be < seed_order.find_index(MultiSetMember)
-  #   end
+    it 'should properly order a chain of dependencies' do
+      skill_type_index = @seed_order.find_index(SkillType)
+      skill_index = @seed_order.find_index(Skill)
+      skill_effect_index = @seed_order.find_index(SkillEffect)
+      expect(skill_type_index).to be < skill_index
+      expect(skill_index).to be < skill_effect_index
+    end
 
-  #   it 'should properly order a chain of dependencies' do
-  #     cm_index = seed_order.find_index(CollectionMember)
-  #     expect(seed_order.find_index(Collectible)).to be < cm_index
-  #     expect(cm_index).to be < seed_order.find_index(AbilitiesCollectionMember)
-  #   end
+    it 'should seed the proper order if multiple models are dependent on the same model' do
+      inventory_item_index = @seed_order.find_index(InventoryItem)
+      expect(@seed_order.find_index(Player)).to be < inventory_item_index
+      expect(@seed_order.find_index(Item)).to be < inventory_item_index
+    end
 
-  #   it 'should seed the proper order if multiple models are dependent on the same model' do
-  #     cmc_index = seed_order.find_index(CollectionMembersCollection)
-  #     expect(seed_order.find_index(CollectionMember)).to be < cmc_index
-  #     expect(seed_order.find_index(Collection)).to be < cmc_index
-  #   end
-  # end
+    it "shouldn't matter if Taggable is included before or after the association is defined in the model" do
+      skill_index = @seed_order.find_index(Skill)
+      skill_effect_index = @seed_order.find_index(SkillEffect)
+      skill_effect_2_index = @seed_order.find_index(SkillEffect2)
+      expect(skill_index).to be < skill_effect_index
+      expect(skill_index).to be < skill_effect_2_index # expect this to fail until the issue is fixed
+    end
+  end
 
   describe '.create_custom' do
     it 'should create a custom tag using the provided values' do

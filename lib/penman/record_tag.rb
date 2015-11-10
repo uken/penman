@@ -27,10 +27,8 @@ module Penman
       end
     end
 
-    @@enabled     = false
-    @@roots       = []
-    @@tree        = {}
-    @@polymorphic = []
+    @@enabled = false
+    @@taggable_models = []
 
     def candidate_key
       decode_candidate_key(super)
@@ -50,18 +48,7 @@ module Penman
       end
 
       def register(model)
-        reflections = model.reflect_on_all_associations(:belongs_to)
-
-        if reflections.find { |r| r.options[:polymorphic] }.present?
-          @@polymorphic << model
-        else
-          @@roots.push(model) unless @@tree.key?(model)
-        end
-
-        @@tree[model] = reflections.reject { |r| r.options[:polymorphic] || r.klass == model }.map(&:klass)
-        @@tree[model].each { |ch| @@tree[ch] ||= [] }
-
-        @@roots -= @@tree[model]
+        @@taggable_models |= [model]
       end
 
       def tag(record, tag)
@@ -166,8 +153,31 @@ module Penman
       end
 
       private
+      def reset_tree
+        @@roots       = []
+        @@tree        = {}
+        @@polymorphic = []
+      end
+
+      def add_model_to_tree(model)
+        reflections = model.reflect_on_all_associations(:belongs_to)
+
+        if reflections.find { |r| r.options[:polymorphic] }.present?
+          @@polymorphic << model
+        else
+          @@roots.push(model) unless @@tree.key?(model)
+        end
+
+        @@tree[model] = reflections.reject { |r| r.options[:polymorphic] || r.klass == model }.map(&:klass)
+        @@tree[model].each { |ch| @@tree[ch] ||= [] }
+
+        @@roots -= @@tree[model]
+      end
 
       def seed_order
+        reset_tree
+        @@taggable_models.each { |m| add_model_to_tree(m) }
+
         seed_order = []
 
         recurse_on = -> (node) do

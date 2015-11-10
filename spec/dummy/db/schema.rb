@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150925025633) do
+ActiveRecord::Schema.define(version: 20151106140902) do
 
   create_table "assets", force: :cascade do |t|
     t.string   "reference",  limit: 255
@@ -76,6 +76,26 @@ ActiveRecord::Schema.define(version: 20150925025633) do
   end
 
   add_index "record_tags", ["record_id", "record_type"], name: "index_record_tags_on_record_id_and_record_type", using: :btree
+
+  create_table "skill_effect2s", force: :cascade do |t|
+    t.string   "reference",       limit: 255
+    t.string   "skill_reference", limit: 255
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  create_table "skill_types", force: :cascade do |t|
+    t.string   "reference",  limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "skills", force: :cascade do |t|
+    t.string   "reference",     limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.integer  "skill_type_id", limit: 4
+  end
 
   create_table "weapons", force: :cascade do |t|
     t.string   "reference",     limit: 255
