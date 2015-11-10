@@ -1,7 +1,7 @@
 class CreateAssets < ActiveRecord::Migration
   def change
     create_table :assets do |t|
-      t.string :reference
+      t.string :reference, unique: true
 
       t.timestamps
     end

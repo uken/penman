@@ -16,5 +16,19 @@
 - Removes `Penman.seed_path` and `Penman.default_candidate_key` as these can be easily accessed through `Penman.config.*`
 - [pull request](https://github.com/uken/penman/pull/2)
 
-### 0.3.6
+### 0.2.7
+- Fix bug for a case where a relation is defined between two models where the foreign key is not the primary key.
+- Thanks to @jayvan for this fix.
+- [pull request](https://github.com/uken/penman/pull/3)
+
+### 0.2.8
+- Adds back a check printed in the seeds files that allow the seeds to be safely run in environments where they were generated.
+- [pull request](https://github.com/uken/penman/pull/4)
+
+### 0.2.9
+- Fix [issue 5](https://github.com/uken/penman/issues/5)
+- Generate the seed order tree at seed generation time, not when the models are loaded. The issue was caused when the `include Taggable` line in the model was above any `belongs_to:` association. When the module is included the model is registered and ordered via a tree with RecordTags. If the `belongs_to` relation isn't setup yet, this ordering can be incorrect. By generating the seed order at seed generation time, we allow the models time to be fully setup before evaluating their relations.
+- [pull request](https://github.com/uken/penman/pull/6)
+
+### 0.3.0
 - Adds the `after_generate` configurable callback that is to be used to add generated seeds to a migrations table of the user's choice.

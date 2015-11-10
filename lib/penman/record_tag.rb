@@ -27,10 +27,8 @@ module Penman
       end
     end
 
-    @@enabled     = false
-    @@roots       = []
-    @@tree        = {}
-    @@polymorphic = []
+    @@enabled = false
+    @@taggable_models = []
 
     def candidate_key
       decode_candidate_key(super)
@@ -50,18 +48,7 @@ module Penman
       end
 
       def register(model)
-        reflections = model.reflect_on_all_associations(:belongs_to)
-
-        if reflections.find { |r| r.options[:polymorphic] }.present?
-          @@polymorphic << model
-        else
-          @@roots.push(model) unless @@tree.key?(model)
-        end
-
-        @@tree[model] = reflections.reject { |r| r.options[:polymorphic] || r.klass == model }.map(&:klass)
-        @@tree[model].each { |ch| @@tree[ch] ||= [] }
-
-        @@roots -= @@tree[model]
+        @@taggable_models |= [model]
       end
 
       def tag(record, tag)
@@ -166,8 +153,31 @@ module Penman
       end
 
       private
+      def reset_tree
+        @@roots       = []
+        @@tree        = {}
+        @@polymorphic = []
+      end
+
+      def add_model_to_tree(model)
+        reflections = model.reflect_on_all_associations(:belongs_to)
+
+        if reflections.find { |r| r.options[:polymorphic] }.present?
+          @@polymorphic << model
+        else
+          @@roots.push(model) unless @@tree.key?(model)
+        end
+
+        @@tree[model] = reflections.reject { |r| r.options[:polymorphic] || r.klass == model }.map(&:klass)
+        @@tree[model].each { |ch| @@tree[ch] ||= [] }
+
+        @@roots -= @@tree[model]
+      end
 
       def seed_order
+        reset_tree
+        @@taggable_models.each { |m| add_model_to_tree(m) }
+
         seed_order = []
 
         recurse_on = -> (node) do
@@ -192,7 +202,7 @@ module Penman
         touched_tags.each do |tag|
           seed_code << "# Generating seed for #{tag.tag.upcase} tag."
           seed_code << "record = #{model.name}.find_by(#{print_candidate_key(tag.record)})"
-          seed_code << "record = #{model.name}.find_or_initialize_by(#{attribute_string_from_hash(model, tag.candidate_key)})"
+          seed_code << "record = #{model.name}.find_or_initialize_by(#{attribute_string_from_hash(model, tag.candidate_key)}) if record.nil?"
 
           column_hash = Hash[
             model.attribute_names
@@ -252,7 +262,8 @@ module Penman
             end
 
             if associated_model.ancestors.include?(Taggable) || associated_model.respond_to?(:candidate_key)
-              associated_record = associated_model.find_by(associated_model.primary_key => v)
+              primary_key = reflection.options[:primary_key] || associated_model.primary_key
+              associated_record = associated_model.find_by(primary_key => v)
               to_add = "#{reflection.name}: #{associated_model.name}.find_by("
 
               if associated_record.present?
