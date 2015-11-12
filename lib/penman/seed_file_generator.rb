@@ -15,6 +15,11 @@ module Penman
       seed_file_name = "#{@timestamp}_#{@file_name}.rb"
       full_seed_file_path = File.join(Penman.config.seed_path, seed_file_name)
       IO.write(full_seed_file_path, erb.result(binding))
+
+      if Penman.config.after_generate.present?
+        Penman.config.after_generate.call(@timestamp, @file_name)
+      end
+
       full_seed_file_path
     end
   end

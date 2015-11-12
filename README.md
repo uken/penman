@@ -28,6 +28,9 @@ Penman.configure do |config|
   config.file_name_formatter = lambda do |model_name, seed_type|
     "#{model_name}_#{seed_type}_seed"
   end
+  config.after_generate = lambda do |version, name|
+    # do some stuff with your new seed file
+  end
 end
 ```
 
@@ -71,6 +74,11 @@ end
 ```
 `seed_type` will be one of `'updates'` (representing record creations or updates) or `'destroys'`. A time stamp will be added to the beginning of the seed file name. Aside from communicating when the seed was generated, it acts as an indicator of what order the seeds should be ran in. Rails will respect this time stamp by default, but if you're using another system to manage your seeds, you should make sure that it respects it as well, otherwise models that depend on one another (ex. models with `belongs_to` relations) may not seed correctly.
 
+#### after_generate
+The `after_generate` callback function is meant to give you the opportunity to add the seed to a schema migrations table of your choice. By default it looks for the standard `schema_migrations` table that rails uses, and adds it there if it can find it. If you use something custom, it would be best for you to implement this method to achieve this result.
+
+Why is this important? For the most basic of use cases, it's not, however there are some edge cases that can get you in trouble if this method is not implemented. The seed files themselves account for their being run in the same environment that they were created, and in this case will produce no changes. This means that you can safely produce seed file `A`, and then run seed file `A` in the same environment without issue. However, if you were to produce seed file `A`, then seed file `B`, and they happen to be editing the same records, it is possible that when `A` runs, the changes made by `A` that are reflected in `B` will effect `A`'s result, which can be problematic. The simplest solution to this is to not run the seeds in the environment that they were created in, thus, the reason for the `after_generate` callback.
+
 ## Candidate Keys
 A candidate key can be defined as a column or set of columns on a table that can uniquely identify each row. In most cases an `id` column alone accomplishes this task, however `id`s often vary between environments over time, a fact which demands we look to a different column or set of columns for this unique identification. It's worth taking this into consideration when architecting your models, as a table with only an `id` candidate key will not to play well with Penman, as it will have no reliable way of identifying rows across environments.
 
@@ -78,6 +86,7 @@ A candidate key can be defined as a column or set of columns on a table that can
 Penman tracks changes via Rails callbacks, which means that the methods called to make changes need to fire them. Most common Rails methods do this, for example `create`, `update`, `destroy`, and their variants, to name a few, and some do not, for example `update_column` and `delete`. Note that this also means that changes made outside of Rails won't be tracked either.
 
 When `Penman.generate_seeds` is called, the `record_tags` that were used to track the DB changes are destroyed in preparation for the next round of changes. This makes the generated seed files very precious, as they alone now represent the DB changes. Therefore, it is recommended that the logic you implement to handle the generated seed files be wrapped in a transaction. That way if something goes awry, the DB will be rolled back, reinstating the `record_tags`, preventing the loss of any work. Here's an example:
+
 ```ruby
 require 'zip'
 

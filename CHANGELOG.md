@@ -29,3 +29,7 @@
 - Fix [issue 5](https://github.com/uken/penman/issues/5)
 - Generate the seed order tree at seed generation time, not when the models are loaded. The issue was caused when the `include Taggable` line in the model was above any `belongs_to:` association. When the module is included the model is registered and ordered via a tree with RecordTags. If the `belongs_to` relation isn't setup yet, this ordering can be incorrect. By generating the seed order at seed generation time, we allow the models time to be fully setup before evaluating their relations.
 - [pull request](https://github.com/uken/penman/pull/6)
+
+### 0.3.9
+- Adds the `after_generate` configurable callback that is to be used to add generated seeds to a migrations table of the user's choice.
+- [pull request](https://github.com/uken/penman/pull/7)
