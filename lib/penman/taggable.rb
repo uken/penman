@@ -2,7 +2,7 @@ module Taggable
   extend ActiveSupport::Concern
 
   included do
-    has_many :record_tags
+    has_one :record_tag, class_name: 'Penman::RecordTag', as: :record
 
     after_create  { Penman::RecordTag.tag(self, 'created') }
     after_update  { Penman::RecordTag.tag(self, 'updated') }
