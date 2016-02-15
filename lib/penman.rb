@@ -7,33 +7,38 @@ require 'penman/seed_file_generator'
 module Penman
   class << self
     attr_writer :config
-  end
 
-  def self.config
-    @config ||= Configuration.new
-  end
+    def config
+      @config ||= Configuration.new
+    end
 
-  def self.configure
-    yield(config)
-  end
+    def configure
+      yield(config)
+    end
 
-  def self.reset
-    @config = Configuration.new
-  end
+    def reset
+      @config = Configuration.new
+    end
 
-  def self.enable
-    RecordTag.enable
-  end
+    def enable
+      RecordTag.enable
+    end
 
-  def self.disable
-    RecordTag.disable
-  end
+    def disable
+      RecordTag.disable
+    end
 
-  def self.enabled?
-    RecordTag.enabled?
-  end
+    def enabled?
+      RecordTag.enabled?
+    end
 
-  def self.generate_seeds
-    RecordTag.generate_seeds
+    def generate_seeds
+      RecordTag.generate_seeds
+    end
+
+    def dependent_records_for(record)
+      return [] unless record.respond_to?(:record_tag) && record.record_tag.present?
+      record.record_tag.dependent_tags.map(&:record)
+    end
   end
 end
