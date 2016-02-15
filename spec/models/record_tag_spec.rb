@@ -661,11 +661,68 @@ describe Penman::RecordTag do
   end
 
   describe '#dependent_tags' do
-    it 'should return an empty array if there are no other tags'
-    it 'should return a tag for a record associated via a belongs_to if that record has a tag'
-    it 'should not return a tag for a record associated via a belongs_to if that record does not have a tag'
-    it 'should return tags for records that are associated via a belongs_to chain'
-    it 'should return a tag for a record associated via a polymorphic belong_to relation'
-    it 'should only return tags associated via a belongs_to chain, and no others'
+    before do
+      Penman::RecordTag.delete_all
+      @inventory_item = InventoryItem.first
+      Penman::RecordTag.tag(@inventory_item, 'updated')
+    end
+
+    it 'should return an empty array if there are no other tags' do
+      expect(@inventory_item.record_tag.dependent_tags).to be_empty
+    end
+
+    it 'should return a tag for a record associated via a belongs_to if that record has a tag' do
+      Penman::RecordTag.tag(@inventory_item.item, 'updated')
+      expect(@inventory_item.record_tag.dependent_tags).to include(@inventory_item.item.record_tag)
+    end
+
+    it 'should not return a tag for a record associated via a belongs_to if that record does not have a tag' do
+      expect(@inventory_item.record_tag.dependent_tags).not_to include(@inventory_item.item.record_tag)
+    end
+
+    it 'should return tags for records that are associated via a belongs_to chain' do
+      Penman::RecordTag.tag(@inventory_item.item, 'updated')
+      Penman::RecordTag.tag(@inventory_item.item.asset, 'updated')
+      expect(@inventory_item.record_tag.dependent_tags).to include(@inventory_item.item.record_tag, @inventory_item.item.asset.record_tag)
+    end
+
+    it 'should only return tags associated via a belongs_to chain, and no others' do
+      Penman::RecordTag.tag(@inventory_item.item, 'updated')
+      Penman::RecordTag.tag(@inventory_item.item.asset, 'updated')
+      expect(@inventory_item.record_tag.dependent_tags).to contain_exactly(@inventory_item.item.record_tag, @inventory_item.item.asset.record_tag)
+    end
+
+    context 'via a polymorphic relation' do
+      before do
+        @msm = MultiSetMember.first
+        Penman::RecordTag.tag(@msm, 'updated')
+      end
+
+      it 'should return an empty array if there are no other tags' do
+        expect(@msm.record_tag.dependent_tags).to be_empty
+      end
+
+      it 'should return a tag for a record associated via a belongs_to if that record has a tag' do
+        Penman::RecordTag.tag(@msm.setable, 'updated')
+        expect(@inventory_item.record_tag.dependent_tags).to include(@msm.setable.record_tag)
+      end
+
+      it 'should return a tag for a record associated belong_to relation' do
+        Penman::RecordTag.tag(@msm.setable, 'updated')
+        expect(@msm.record_tag.dependent_tags).to include(@msm.setable.record_tag)
+      end
+
+      it 'should return tags for records that are associated via a belongs_to chain' do
+        Penman::RecordTag.tag(@msm.setable, 'updated')
+        Penman::RecordTag.tag(@msm.setable.asset, 'updated')
+        expect(@msm.record_tag.dependent_tags).to include(@msm.setable.record_tag, @msm.setable.asset.record_tag)
+      end
+
+      it 'should only return tags associated via a belongs_to chain, and no others' do
+        Penman::RecordTag.tag(@msm.setable, 'updated')
+        Penman::RecordTag.tag(@msm.setable.asset, 'updated')
+        expect(@msm.record_tag.dependent_tags).to contain_exactly(@msm.setable.record_tag, @msm.setable.asset.record_tag)
+      end
+    end
   end
 end
