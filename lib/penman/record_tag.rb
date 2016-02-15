@@ -34,6 +34,15 @@ module Penman
       decode_candidate_key(super)
     end
 
+    def dependent_tags
+      self.record.class.reflect_on_all_associations(:belongs_to).reduce do |dependent_tags, relation|
+        self.record.send(relation.name).record_tags.each do |dependent_tag|
+          dependent_tags << dependent_tag
+          dependent_tags.concat!(dependent_tag.dependent_tags)
+        end
+      end
+    end
+
     class << self
       def disable
         @@enabled = false

@@ -1,5 +1,6 @@
 module Taggable
   extend ActiveSupport::Concern
+  has_many :record_tags, polymorphic: true
 
   included do
     after_create  { Penman::RecordTag.tag(self, 'created') }
