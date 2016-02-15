@@ -659,4 +659,13 @@ describe Penman::RecordTag do
       run_seed_spec_for_model(InventoryItem, default_attributes)
     end
   end
+
+  describe '#dependent_tags' do
+    it 'should return an empty array if there are no other tags'
+    it 'should return a tag for a record associated via a belongs_to if that record has a tag'
+    it 'should not return a tag for a record associated via a belongs_to if that record does not have a tag'
+    it 'should return tags for records that are associated via a belongs_to chain'
+    it 'should return a tag for a record associated via a polymorphic belong_to relation'
+    it 'should only return tags associated via a belongs_to chain, and no others'
+  end
 end
