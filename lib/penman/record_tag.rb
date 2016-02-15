@@ -35,11 +35,11 @@ module Penman
     end
 
     def dependent_tags
-      self.record.class.reflect_on_all_associations(:belongs_to).reduce do |dependent_tags, relation|
-        self.record.send(relation.name).record_tags.each do |dependent_tag|
-          dependent_tags << dependent_tag
-          dependent_tags.concat!(dependent_tag.dependent_tags)
-        end
+      self.record.class.reflect_on_all_associations(:belongs_to).reduce([]) do |dependent_tags, relation|
+        dependent_tag = self.record.send(relation.name).record_tag
+        next dependent_tags if dependent_tag.nil?
+        dependent_tags << dependent_tag
+        dependent_tags + dependent_tag.dependent_tags
       end
     end
 
