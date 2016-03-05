@@ -193,6 +193,7 @@ module Penman
       end
 
       def generate_update_seed(model, timestamp)
+        validate_records_for_model(model) if Penman.config.validate_records_before_seed_generation
         touched_tags = RecordTag.where(record_type: model.name, tag: ['created', 'updated']).includes(:record)
         return nil if touched_tags.empty?
         seed_code = SeedCode.new
@@ -235,6 +236,10 @@ module Penman
         seed_file_name = Penman.config.file_name_formatter.call(model.name, 'destroys')
         sfg = SeedFileGenerator.new(seed_file_name, timestamp, seed_code)
         sfg.write_seed
+      end
+
+      def validate_records_for_model(model)
+
       end
 
       def print_candidate_key(record)
