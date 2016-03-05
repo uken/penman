@@ -25,6 +25,7 @@ Penman.configure do |config|
   config.seed_path = 'some/path/where/seeds/should/go'
   config.default_candidate_key = [:some, :list, :of, :attributes]
   config.seed_template_file = 'my_seed_file_template.erb'
+  config.validate_records_before_seed_generation = true
   config.file_name_formatter = lambda do |model_name, seed_type|
     "#{model_name}_#{seed_type}_seed"
   end
@@ -64,6 +65,9 @@ class <%= file_name.camelize %> < ActiveRecord::Migration
 end
 ```
 As you can see, some bindings are available to you in this file, namely the `file_name` and the `seed_code`. The `seed_code` is a simple wrapper that lets you print with a certain amount of leading spaces or tabs.
+
+#### validate_records_before_seed_generation
+This flag controls the calling of the [`validate!`](http://api.rubyonrails.org/classes/ActiveRecord/Validations.html#method-i-validate-21) method on each record tagged as updated or created that is to be seeded. If an invalid record is found, the `ActiveRecord::RecordInvalid` exception is raised, the seed is not be generated, and tags remain in-tact. This flag gets a default value of `false`.
 
 #### file_name_formatter
 The `file_name_formatter` option gives you a chance to customize the file name that the resulting seed file is given. It defaults to the following:
