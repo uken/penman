@@ -1,4 +1,6 @@
-require 'spec_helper'
+
+binding.pry
+require 'spec_helper.rb'
 
 def run_seed_spec_for_model(model, default_attributes)
   model_candidate_key = model.try(:candidate_key) || :reference
