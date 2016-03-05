@@ -148,7 +148,7 @@ module Penman
         seed_files = []
         seed_files << generate_update_seed(model, time.strftime('%Y%m%d%H%M%S'))
         seed_files << generate_destroy_seed(model, (time + 1.second).strftime('%Y%m%d%H%M%S'))
-        RecordTag.where(record_type: model.name).destroy_all
+        RecordTag.where(record_type: model.name).delete_all
         seed_files.compact
       end
 
