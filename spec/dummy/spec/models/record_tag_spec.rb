@@ -1,5 +1,3 @@
-
-binding.pry
 require 'spec_helper.rb'
 
 def run_seed_spec_for_model(model, default_attributes)
@@ -467,6 +465,56 @@ describe Penman::RecordTag do
 
       player = Player.find_by(name: 'new_player')
       expect(player).not_to be_nil
+    end
+
+    context 'if `validate_records_before_seed_generation` is configured to be true' do
+      let(:item) { Item.create!(reference: 'test_item') }
+
+      before do
+        Penman.configure do |config|
+          config.validate_records_before_seed_generation = true
+        end
+      end
+
+      it 'should throw an `ActiveRecord::RecordInvalid` exception if an update record is invalid' do
+        item.update_attribute(:reference, nil) # skip validations
+        expect(item.valid?).to be false # otherwise our tests isn't valid
+        expect {
+          Penman::RecordTag.generate_seed_for_model(Item)
+        }.to raise_exception(ActiveRecord::RecordInvalid)
+      end
+
+      it 'should not throw an `ActiveRecord::RecordInvalid` exception if an update record is valid' do
+        expect(item.valid?).to be true # otherwise our tests isn't valid
+        expect {
+          Penman::RecordTag.generate_seed_for_model(Item)
+        }.to_not raise_exception
+      end
+    end
+
+    context 'if `validate_records_before_seed_generation` is configured to be false' do
+      let(:item) { Item.create!(reference: 'test_item') }
+
+      before do
+        Penman.configure do |config|
+          config.validate_records_before_seed_generation = false
+        end
+      end
+
+      it 'should not throw an `ActiveRecord::RecordInvalid` exception if an update record is invalid' do
+        item.update_attribute(:reference, nil) # skip validations
+        expect(item.valid?).to be false # otherwise our tests isn't valid
+        expect {
+          Penman::RecordTag.generate_seed_for_model(Item)
+        }.to_not raise_exception
+      end
+
+      it 'should not throw an `ActiveRecord::RecordInvalid` exception if an update record is valid' do
+        expect(item.valid?).to be true # otherwise our tests isn't valid
+        expect {
+          Penman::RecordTag.generate_seed_for_model(Item)
+        }.to_not raise_exception
+      end
     end
   end
 

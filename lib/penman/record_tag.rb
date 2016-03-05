@@ -239,7 +239,9 @@ module Penman
       end
 
       def validate_records_for_model(model)
-
+        RecordTag.where(record_type: model.name, tag: ['updated', 'created'])
+                 .includes(:record)
+                 .each { |r| r.record.validate! }
       end
 
       def print_candidate_key(record)
