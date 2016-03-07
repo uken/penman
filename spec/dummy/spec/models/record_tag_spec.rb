@@ -1,61 +1,4 @@
-require 'spec_helper'
-
-def validate(record, default_attributes)
-  expect(record).not_to be_nil
-  candidate_key = record.class.try(:candidate_key) || :reference
-  candidate_key = [candidate_key] unless candidate_key.is_a? Array
-
-  default_attributes.reject { |k| candidate_key.include? k }.each do |k, v|
-    if record.send(k).is_a? Time
-      expect(record.send(k).to_i).to eq(v.to_i)
-    else
-      expect(record.send(k)).to eq(v)
-    end
-  end
-end
-
-def make_candidate_key_hash(model, candidate_key, index = 1)
-  result = {}
-
-  if model.name == 'MultiSetMember'
-    result = { multi_set_id: MultiSet.last.id, setable_type: 'Item', setable_id: Item.take(index).last.id }
-  else
-    candidate_key.each do |column|
-      result[column] =
-        case model.column_types[column.to_s].type
-        when :string
-          "new_record_#{index}"
-        when :integer
-          index
-        end
-    end
-  end
-
-  result
-end
-
-def copy_to_new_record(record)
-  attrs = record.as_json.delete_if { |k, _v| k == 'id' }
-  record.destroy!
-  record.class.create!(attrs)
-end
-
-def find_or_create_with_tag(model, hash)
-  record = model.find_or_create_by!(hash)
-
-  # just in case the record already existed
-  Penman::RecordTag.tag(record, 'created') unless Penman::RecordTag.find_by(record: record).present?
-
-  record
-end
-
-def simulate_record_having_been_present_previously(model, attributes)
-  record = model.find_by(attributes)
-  found_record = record.present?
-  record = model.create!(attributes) unless found_record
-  Penman::RecordTag.find_by(record: record).try(:destroy) # simulate record having been present previously if it was not
-  record
-end
+require 'spec_helper.rb'
 
 def run_seed_spec_for_model(model, default_attributes)
   model_candidate_key = model.try(:candidate_key) || :reference
@@ -522,6 +465,56 @@ describe Penman::RecordTag do
 
       player = Player.find_by(name: 'new_player')
       expect(player).not_to be_nil
+    end
+
+    context 'if `validate_records_before_seed_generation` is configured to be true' do
+      let(:item) { Item.create!(reference: 'test_item') }
+
+      before do
+        Penman.configure do |config|
+          config.validate_records_before_seed_generation = true
+        end
+      end
+
+      it 'should throw an `ActiveRecord::RecordInvalid` exception if an update record is invalid' do
+        item.update_attribute(:reference, nil) # skip validations
+        expect(item.valid?).to be false # otherwise our tests isn't valid
+        expect {
+          Penman::RecordTag.generate_seed_for_model(Item)
+        }.to raise_exception(ActiveRecord::RecordInvalid)
+      end
+
+      it 'should not throw an `ActiveRecord::RecordInvalid` exception if an update record is valid' do
+        expect(item.valid?).to be true # otherwise our tests isn't valid
+        expect {
+          Penman::RecordTag.generate_seed_for_model(Item)
+        }.to_not raise_exception
+      end
+    end
+
+    context 'if `validate_records_before_seed_generation` is configured to be false' do
+      let(:item) { Item.create!(reference: 'test_item') }
+
+      before do
+        Penman.configure do |config|
+          config.validate_records_before_seed_generation = false
+        end
+      end
+
+      it 'should not throw an `ActiveRecord::RecordInvalid` exception if an update record is invalid' do
+        item.update_attribute(:reference, nil) # skip validations
+        expect(item.valid?).to be false # otherwise our tests isn't valid
+        expect {
+          Penman::RecordTag.generate_seed_for_model(Item)
+        }.to_not raise_exception
+      end
+
+      it 'should not throw an `ActiveRecord::RecordInvalid` exception if an update record is valid' do
+        expect(item.valid?).to be true # otherwise our tests isn't valid
+        expect {
+          Penman::RecordTag.generate_seed_for_model(Item)
+        }.to_not raise_exception
+      end
     end
   end
 

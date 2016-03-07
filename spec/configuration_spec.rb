@@ -6,7 +6,7 @@ module Penman
       before { @config = Configuration.new }
 
       context 'regarding default values' do
-        it "should have a value of 'db' by default for seed_path" do
+        it "should have a value of 'db/migrate' by default for seed_path" do
           expect(@config.seed_path).to eq('db/migrate')
         end
 
@@ -22,21 +22,30 @@ module Penman
         it 'should format the filename in the usual way' do
           expect(@config.file_name_formatter.call('SomeModel', 'updates')).to eq('some_models_updates')
         end
+
+        it 'should have a default `validate_records_before_seed_generation` value of false' do
+          expect(@config.validate_records_before_seed_generation).to be false
+        end
       end
 
-      it 'should support seed_path configuration' do
+      it 'should support `seed_path` configuration' do
         @config.seed_path = 'some/path/where/seeds/should/go'
         expect(@config.seed_path).to eq('some/path/where/seeds/should/go')
       end
 
-      it 'should support default_candidate_key configuration' do
+      it 'should support `default_candidate_key` configuration' do
         @config.default_candidate_key = :some_other_attribute
         expect(@config.default_candidate_key).to eq(:some_other_attribute)
       end
 
-      it 'should support seed_template_file configuration' do
+      it 'should support `seed_template_file` configuration' do
         @config.seed_template_file = 'some_file'
         expect(@config.seed_template_file).to eq('some_file')
+      end
+
+      it 'should support `validate_records_before_seed_generation` configuration' do
+        @config.validate_records_before_seed_generation = true
+        expect(@config.validate_records_before_seed_generation).to be true
       end
 
       it 'should support a custom file name formatter lambda' do
