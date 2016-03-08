@@ -404,7 +404,7 @@ describe Penman::RecordTag do
 
       weapon = Weapon.find_by(reference: "devlin's weapon")
       expect(weapon).not_to be_nil
-      expect(weapon.category).to eq('"\"]''%"')
+      expect(weapon.category).to eq("\"]''%")
     end
 
     it 'should seed a simple model with nil values' do
