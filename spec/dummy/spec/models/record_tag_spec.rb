@@ -395,6 +395,18 @@ describe Penman::RecordTag do
       expect(weapon.category).to eq('some_category')
     end
 
+    it 'should correctly seed strings with special characters in it' do
+      weapon = Weapon.create(reference: "devlin's weapon", category: "\"]''%")
+      seed_files = Penman::RecordTag.generate_seed_for_model(Weapon)
+      weapon.destroy
+
+      run_seed(seed_files)
+
+      weapon = Weapon.find_by(reference: "devlin's weapon")
+      expect(weapon).not_to be_nil
+      expect(weapon.category).to eq('"\"]''%"')
+    end
+
     it 'should seed a simple model with nil values' do
       weapon = Weapon.create(reference: 'new_weapon', category: 'some_category', damage_factor: nil)
       seed_files = Penman::RecordTag.generate_seed_for_model(Weapon)
