@@ -314,7 +314,7 @@ module Penman
         if p.nil?
           'nil'
         elsif p.is_a? String
-          "Base64.decode('#{Base64.encode(p)}')"
+          p.inspect
         elsif p.is_a? Time
           "Time.parse('#{p}')"
         else
