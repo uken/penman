@@ -314,7 +314,7 @@ module Penman
         if p.nil?
           'nil'
         elsif p.is_a? String
-          "'#{p}'"
+          p.inspect
         elsif p.is_a? Time
           "Time.parse('#{p}')"
         else
