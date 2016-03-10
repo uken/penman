@@ -1,10 +1,11 @@
 module Penman
   class Configuration
-    attr_accessor :seed_path
-    attr_accessor :default_candidate_key
-    attr_accessor :seed_template_file
-    attr_accessor :file_name_formatter
-    attr_accessor :after_generate
+    attr_accessor :seed_path,
+                  :default_candidate_key,
+                  :seed_template_file,
+                  :file_name_formatter,
+                  :after_generate,
+                  :validate_records_before_seed_generation
 
     def initialize
       @seed_path = 'db/migrate'
@@ -28,6 +29,8 @@ module Penman
 
         SchemaMigration.find_or_create_by(version: version)
       end
+
+      @validate_records_before_seed_generation = false
     end
   end
 end

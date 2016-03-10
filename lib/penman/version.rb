@@ -1,8 +1,7 @@
 module Penman
   MAJOR = 0     # api
-  MINOR = 3     # features
-  PATCH = 9     # bug fixes
-  BUILD = nil   # beta, rc1, etc
+  MINOR = 4     # features
+  PATCH = 10    # bug fixes
 
-  VERSION = [MAJOR, MINOR, PATCH, BUILD].compact.join('.')
+  VERSION = [MAJOR, MINOR, PATCH].compact.join('.')
 end

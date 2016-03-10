@@ -157,7 +157,7 @@ module Penman
         seed_files = []
         seed_files << generate_update_seed(model, time.strftime('%Y%m%d%H%M%S'))
         seed_files << generate_destroy_seed(model, (time + 1.second).strftime('%Y%m%d%H%M%S'))
-        RecordTag.where(record_type: model.name).destroy_all
+        RecordTag.where(record_type: model.name).delete_all
         seed_files.compact
       end
 
@@ -202,6 +202,7 @@ module Penman
       end
 
       def generate_update_seed(model, timestamp)
+        validate_records_for_model(model) if Penman.config.validate_records_before_seed_generation
         touched_tags = RecordTag.where(record_type: model.name, tag: ['created', 'updated']).includes(:record)
         return nil if touched_tags.empty?
         seed_code = SeedCode.new
@@ -244,6 +245,12 @@ module Penman
         seed_file_name = Penman.config.file_name_formatter.call(model.name, 'destroys')
         sfg = SeedFileGenerator.new(seed_file_name, timestamp, seed_code)
         sfg.write_seed
+      end
+
+      def validate_records_for_model(model)
+        RecordTag.where(record_type: model.name, tag: ['updated', 'created'])
+                 .includes(:record)
+                 .each { |r| r.record.validate! }
       end
 
       def print_candidate_key(record)
@@ -316,7 +323,7 @@ module Penman
         if p.nil?
           'nil'
         elsif p.is_a? String
-          "'#{p}'"
+          p.inspect
         elsif p.is_a? Time
           "Time.parse('#{p}')"
         else

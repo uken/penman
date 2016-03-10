@@ -33,3 +33,11 @@
 ### 0.3.9
 - Adds the `after_generate` configurable callback that is to be used to add generated seeds to a migrations table of the user's choice.
 - [pull request](https://github.com/uken/penman/pull/7)
+
+### 0.4.9
+- Adds an optional record validity check prior to seeds.
+- [pull request](https://github.com/uken/penman/pull/9)
+
+### 0.4.10
+- Encode strings with `.inspect`, allowing for special characters in the strings to be escaped.
+- [pull request](https://github.com/uken/penman/pull/10)
