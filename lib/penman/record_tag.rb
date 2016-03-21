@@ -115,6 +115,11 @@ module Penman
         RecordTag.where(record_type: models.map { |m| (m.is_a? String) ? m : m.name })
       end
 
+      def valid_ordered_models_for_seeds(models)
+        valid_models = @@taggable_models & models
+        seed_order(valid_models)
+      end
+
       def create_custom(attributes = {})
         attributes = { record_type: 'custom_tag', tag: 'touched', candidate_key: 'n/a' }.merge attributes
         record_tag = RecordTag.find_or_create_by(attributes)
@@ -122,24 +127,26 @@ module Penman
       end
 
       def generate_seeds
-        generate_seed_for_models(seed_order)
+        generate_seeds_for_models(@@taggable_models)
       end
 
-      def generate_seed_for_models(models)
+      def generate_seeds_for_models(models)
+        models_for_seeds = valid_ordered_models_for_seeds(models)
+
         time = Time.now
         seed_files = []
 
-        models.each do |model|
+        models_for_seeds.each do |model|
           seed_files << generate_update_seed(model, time.strftime('%Y%m%d%H%M%S'))
           time += 1.second
         end
 
-        models.reverse.each do |model|
+        models_for_seeds.reverse.each do |model|
           seed_files << generate_destroy_seed(model, time.strftime('%Y%m%d%H%M%S'))
           time += 1.second
         end
 
-        RecordTag.where(record_type: models.map(&:name)).destroy_all
+        RecordTag.where(record_type: models_for_seeds.map(&:name)).destroy_all
         seed_files.compact
       end
 
@@ -174,9 +181,9 @@ module Penman
         @@roots -= @@tree[model]
       end
 
-      def seed_order
+      def seed_order(models)
         reset_tree
-        @@taggable_models.each { |m| add_model_to_tree(m) }
+        models.each { |m| add_model_to_tree(m) }
 
         seed_order = []
 

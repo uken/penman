@@ -36,4 +36,8 @@ module Penman
   def self.generate_seeds
     RecordTag.generate_seeds
   end
+
+  def self.generate_seeds_for_models(models)
+    RecordTag.generate_seeds_for_models(models)
+  end
 end
