@@ -41,3 +41,8 @@
 ### 0.4.10
 - Encode strings with `.inspect`, allowing for special characters in the strings to be escaped.
 - [pull request](https://github.com/uken/penman/pull/10)
+
+### 0.5.10
+- relax rails constraint, allowing rails 5 apps to use the gem
+- direct users to put the configuration in initializers
+- [pull request](https://github.com/uken/penman/pull/11) (thanks @nearlyfreeapps)
