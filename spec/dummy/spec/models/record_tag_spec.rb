@@ -531,15 +531,20 @@ describe Penman::RecordTag do
   end
 
   describe '.generate_seeds_for_models' do
+    before { PlayerInfo.create!(player_id: 1, key: 'asdf', value: 'asdf') }
+
     it 'should only generate seeds for the models that are passed to it'
 
     it "should exclude any passed models that aren't taggable" do
-      PlayerInfo.create!(player_id: 1, key: 'asdf', value: 'asdf')
       seed_files = Penman::RecordTag.generate_seeds_for_models([PlayerInfo])
       expect(seed_files).to be_empty
     end
 
-    it 'should not generate any seeds if none of the passed models are taggable'
+    it 'should not generate any seeds if none of the passed models are taggable' do
+      expect(Penman::RecordTag).to_not receive(:generate_update_seed)
+      expect(Penman::RecordTag).to_not receive(:generate_destroy_seed)
+      Penman::RecordTag.generate_seeds_for_models([PlayerInfo])
+    end
   end
 
   describe '.seed_order' do
