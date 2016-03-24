@@ -43,5 +43,10 @@
 - [pull request](https://github.com/uken/penman/pull/10)
 
 ### 0.5.10
-- Add functionality for generating seeds only for specific models (thanks @lyrebird!)
+- relax rails constraint, allowing rails 5 apps to use the gem
+- direct users to put the configuration in initializers
+- [pull request](https://github.com/uken/penman/pull/11) (thanks @nearlyfreeapps)
+
+### 0.6.10
+- Add functionality for generating seeds only for specific models (thanks @lyrebird)
 - [pull request](https://github.com/uken/penman/pull/12)

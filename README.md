@@ -18,7 +18,7 @@ By including the `Taggable` module, Penman will track changes to that module via
 Once satisfied with the changes made, call `Penman.generate_seeds` to produce seed files representing the changes. This method returns an array of seed file names which you can use to zip and download, upload elsewhere, commit directly to your repository, etc.
 
 ## Configuration
-Here is an example config file that you should consider putting in a `config/penman.rb` file if the defaults aren't working for you:
+Here is an example config file that you should consider putting in a `config/initializers/penman.rb` file if the defaults aren't working for you:
 
 ```ruby
 Penman.configure do |config|
