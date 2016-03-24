@@ -41,3 +41,7 @@
 ### 0.4.10
 - Encode strings with `.inspect`, allowing for special characters in the strings to be escaped.
 - [pull request](https://github.com/uken/penman/pull/10)
+
+### 0.5.10
+- Add functionality for generating seeds only for specific models (thanks @lyrebird!)
+- [pull request](https://github.com/uken/penman/pull/12)
