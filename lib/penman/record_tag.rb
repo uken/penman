@@ -127,21 +127,21 @@ module Penman
       end
 
       def generate_seeds
-        generate_seeds_for_models(@@taggable_models)
+        generate_seeds_for_models
       end
 
       def generate_seeds_for_models(models)
-        models_for_seeds = valid_ordered_models_for_seeds(models)
+        models = valid_ordered_models_for_seeds(models)
 
         time = Time.now
         seed_files = []
 
-        models_for_seeds.each do |model|
+        models.each do |model|
           seed_files << generate_update_seed(model, time.strftime('%Y%m%d%H%M%S'))
           time += 1.second
         end
 
-        models_for_seeds.reverse.each do |model|
+        models.reverse.each do |model|
           seed_files << generate_destroy_seed(model, time.strftime('%Y%m%d%H%M%S'))
           time += 1.second
         end
@@ -181,7 +181,7 @@ module Penman
         @@roots -= @@tree[model]
       end
 
-      def seed_order(models)
+      def seed_order(models = @@taggable_models)
         reset_tree
         models.each { |m| add_model_to_tree(m) }
 
