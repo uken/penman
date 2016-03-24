@@ -146,7 +146,7 @@ module Penman
           time += 1.second
         end
 
-        RecordTag.where(record_type: models_for_seeds.map(&:name)).destroy_all
+        RecordTag.where(record_type: models.map(&:name)).destroy_all
         seed_files.compact
       end
 
