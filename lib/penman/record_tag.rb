@@ -132,7 +132,7 @@ module Penman
 
       def generate_seeds_for_models(models)
         models = valid_ordered_models_for_seeds(models)
-        return if models.empty?
+        return [] if models.empty?
 
         time = Time.now
         seed_files = []
