@@ -530,6 +530,12 @@ describe Penman::RecordTag do
     end
   end
 
+  describe '.generate_seeds_for_models' do
+    it 'should only generate seeds for the models that are passed to it'
+    it "should exclude any passed models that aren't taggable"
+    it 'should not generate any seeds if none of the passed models are taggable'
+  end
+
   describe '.seed_order' do
     before do
       # reference the models so they are loaded and added to the RecordTags's seed order tree
