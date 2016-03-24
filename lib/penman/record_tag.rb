@@ -127,7 +127,7 @@ module Penman
       end
 
       def generate_seeds
-        generate_seeds_for_models
+        generate_seeds_for_models(seed_order)
       end
 
       def generate_seeds_for_models(models)
