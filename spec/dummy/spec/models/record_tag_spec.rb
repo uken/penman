@@ -530,6 +530,29 @@ describe Penman::RecordTag do
     end
   end
 
+  describe '.generate_seeds_for_models' do
+    before { PlayerInfo.create!(player_id: 1, key: 'asdf', value: 'asdf') }
+
+    it 'should only generate seeds for the models that are passed to it' do
+      Item.create!(reference: 'asdf', asset: Asset.first)
+      Player.create!(name: 'asdf')
+      seed_files = Penman::RecordTag.generate_seeds_for_models([Item])
+      expect(seed_files.count).to eq 1
+      expect(seed_files.first.split('/').last).to match(/\d{14}_items_updates.rb/)
+    end
+
+    it "should exclude any passed models that aren't taggable" do
+      seed_files = Penman::RecordTag.generate_seeds_for_models([PlayerInfo])
+      expect(seed_files).to be_empty
+    end
+
+    it 'should not generate any seeds if none of the passed models are taggable' do
+      expect(Penman::RecordTag).to_not receive(:generate_update_seed)
+      expect(Penman::RecordTag).to_not receive(:generate_destroy_seed)
+      Penman::RecordTag.generate_seeds_for_models([PlayerInfo])
+    end
+  end
+
   describe '.seed_order' do
     before do
       # reference the models so they are loaded and added to the RecordTags's seed order tree

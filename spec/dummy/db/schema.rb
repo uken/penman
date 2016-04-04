@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151106140902) do
+ActiveRecord::Schema.define(version: 20160324223036) do
 
   create_table "assets", force: :cascade do |t|
     t.string   "reference",  limit: 255
@@ -56,6 +56,12 @@ ActiveRecord::Schema.define(version: 20151106140902) do
   end
 
   add_index "multi_sets", ["reference"], name: "index_multi_sets_on_reference", unique: true, using: :btree
+
+  create_table "player_infos", force: :cascade do |t|
+    t.integer "player_id", limit: 4,   null: false
+    t.string  "key",       limit: 255, null: false
+    t.string  "value",     limit: 255
+  end
 
   create_table "players", force: :cascade do |t|
     t.string   "name",       limit: 255
