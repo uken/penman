@@ -111,3 +111,7 @@ def download_seeds
   send_file zip_file_name
 end
 ```
+
+## Constraints
+
+Rails models and their relations can be setup in many different ways. Rather than trying to account for every possible setup, Penman imposes a simple constraint to simplify the problem that it solves. *Any relation between models tracked by Penman should use the associated model's `primary_key` as the foreign key in the relation.* By sticking to this rule, you will greatly reduce the chances of errors during your seed generation process. Using `id` is traditional, and works well. Similarly, if you change a model's primary key by assigning it in your model definition, then make sure that it's relations use the assigned primary key as well.
