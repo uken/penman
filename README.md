@@ -2,7 +2,7 @@
 A scribe for your database and Rails project, Penman records your DB changes and produces seed files that reflect them.
 
 ## A Quick Guide
-Once the gem has been added to your gem file, rune `rake db:migrate` to add Penman's `record_tags` table to your DB. This table is used to tag your DB records as they are changed. Now, to the good stuff...
+Once the gem has been added to your gem file, run `rake db:migrate` to add Penman's `record_tags` table to your DB. This table is used to tag your DB records as they are changed. Now, to the good stuff...
 
 Say you're interested in tracking changes to a your `Item` model. Include the `Taggable` module in your model:
 
