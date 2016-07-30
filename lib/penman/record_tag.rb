@@ -21,7 +21,7 @@ module Penman
         ActiveSupport::JSON.decode(key).symbolize_keys
       rescue JSON::ParserError
         # This will occur if the candidate key isn't encoded as json.
-        #   An example of this would be when we are tagging yaml files as touched when messing with lang.
+        #   An example of this is when we tag yaml files as touched when updating lang.
         #   In that case we store the file path in the candidate key column as a regular string.
         key
       end
