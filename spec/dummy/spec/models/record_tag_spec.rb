@@ -1,5 +1,75 @@
 require 'spec_helper.rb'
 
+# these specs involve change the candidate key, which is fair so long as it's not also the primary key
+def run_canidate_key_specs_for_model(model, default_attributes)
+  model_candidate_key = model.try(:candidate_key) || :reference
+  model_candidate_key = [model_candidate_key] unless model_candidate_key.is_a? Array
+  seed_files = []
+
+  after do
+    seed_files.each do |f|
+      File.delete(f) if File.exist?(f)
+    end
+
+    seed_files = []
+  end
+
+  it 'should update the candidate key if changed' do
+    record = model.find_or_create_by!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
+    record.update!(make_candidate_key_hash(model, model_candidate_key, 2))
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
+
+    record.destroy
+    model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
+
+    run_seed(seed_files)
+
+    expect(model.find_by(make_candidate_key_hash(model, model_candidate_key, 2))).not_to be_nil
+  end
+
+  it 'should not leave a record around with an old candidate_key if updated' do
+    # just in case the record existed before this test
+    model.find_by(make_candidate_key_hash(model, model_candidate_key, 1)).try(:delete)
+    model.find_by(make_candidate_key_hash(model, model_candidate_key, 2)).try(:delete)
+
+    record = model.find_or_create_by!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
+    record.update!(make_candidate_key_hash(model, model_candidate_key, 2))
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
+
+    record.destroy!
+    model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
+    run_seed(seed_files)
+
+    expect(model.find_by(make_candidate_key_hash(model, model_candidate_key, 1))).to be_nil
+  end
+
+  it 'should destroy a record if it was updated then destroyed' do
+    record = simulate_record_having_been_present_previously(
+      model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
+    record.update!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 2)))
+    record.destroy!
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
+
+    model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
+    run_seed(seed_files)
+
+    record = model.find_by(make_candidate_key_hash(model, model_candidate_key))
+    expect(record).to be_nil
+  end
+
+  it 'should update an existing record' do
+    record = find_or_create_with_tag(
+      model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
+    record.update!(make_candidate_key_hash(model, model_candidate_key, 2))
+    seed_files = Penman::RecordTag.generate_seed_for_model(model)
+    record.destroy!
+    model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
+    run_seed(seed_files)
+    record = model.find_by(make_candidate_key_hash(model, model_candidate_key, 2))
+    validate(record, default_attributes)
+  end
+end
+
 def run_seed_spec_for_model(model, default_attributes)
   model_candidate_key = model.try(:candidate_key) || :reference
   model_candidate_key = [model_candidate_key] unless model_candidate_key.is_a? Array
@@ -143,61 +213,6 @@ def run_seed_spec_for_model(model, default_attributes)
     records = model.where(make_candidate_key_hash(model, model_candidate_key))
     expect(records.count).to eq(1)
     validate(records.first, default_attributes)
-  end
-
-  it 'should destroy a record if it was updated then destroyed' do
-    record = simulate_record_having_been_present_previously(
-      model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
-    record.update!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 2)))
-    record.destroy!
-    seed_files = Penman::RecordTag.generate_seed_for_model(model)
-
-    model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key)))
-    run_seed(seed_files)
-
-    record = model.find_by(make_candidate_key_hash(model, model_candidate_key))
-    expect(record).to be_nil
-  end
-
-  it 'should update an existing record' do
-    record = find_or_create_with_tag(
-      model, default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
-    record.update!(make_candidate_key_hash(model, model_candidate_key, 2))
-    seed_files = Penman::RecordTag.generate_seed_for_model(model)
-    record.destroy!
-    model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
-    run_seed(seed_files)
-    record = model.find_by(make_candidate_key_hash(model, model_candidate_key, 2))
-    validate(record, default_attributes)
-  end
-
-  it 'should update the candidate key if changed' do
-    record = model.find_or_create_by!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
-    record.update!(make_candidate_key_hash(model, model_candidate_key, 2))
-    seed_files = Penman::RecordTag.generate_seed_for_model(model)
-
-    record.destroy
-    model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
-
-    run_seed(seed_files)
-
-    expect(model.find_by(make_candidate_key_hash(model, model_candidate_key, 2))).not_to be_nil
-  end
-
-  it 'should not leave a record around with an old candidate_key if updated' do
-    # just in case the record existed before this test
-    model.find_by(make_candidate_key_hash(model, model_candidate_key, 1)).try(:delete)
-    model.find_by(make_candidate_key_hash(model, model_candidate_key, 2)).try(:delete)
-
-    record = model.find_or_create_by!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
-    record.update!(make_candidate_key_hash(model, model_candidate_key, 2))
-    seed_files = Penman::RecordTag.generate_seed_for_model(model)
-
-    record.destroy!
-    model.create!(default_attributes.merge(make_candidate_key_hash(model, model_candidate_key, 1)))
-    run_seed(seed_files)
-
-    expect(model.find_by(make_candidate_key_hash(model, model_candidate_key, 1))).to be_nil
   end
 
   it 'should have no effect if we create and delete a model' do
@@ -565,6 +580,7 @@ describe Penman::RecordTag do
       InventoryItem
       Player
       Item
+      Stage
       @seed_order = Penman::RecordTag.send(:seed_order)
     end
 
@@ -654,11 +670,13 @@ describe Penman::RecordTag do
     describe 'Item Seeds' do
       default_attributes = { reference: 'new_item_ref', asset_id: Asset.last.id }
       run_seed_spec_for_model(Item, default_attributes)
+      run_canidate_key_specs_for_model(Item, default_attributes)
     end
 
     describe 'MultiSet Seeds' do
       default_attributes = { reference: 'some_great_new_multiset', weight: 1, quantity: 1 }
       run_seed_spec_for_model(MultiSet, default_attributes)
+      run_canidate_key_specs_for_model(MultiSet, default_attributes)
     end
 
     describe 'MultiSetMember Seeds' do
@@ -670,21 +688,30 @@ describe Penman::RecordTag do
         quantity: 1,
       }
       run_seed_spec_for_model(MultiSetMember, default_attributes)
+      run_canidate_key_specs_for_model(MultiSetMember, default_attributes)
     end
 
     describe 'Player Seeds' do
       default_attributes = { name: 'some name' }
       run_seed_spec_for_model(Player, default_attributes)
+      run_canidate_key_specs_for_model(Player, default_attributes)
     end
 
     describe 'Asset Seeds' do
       default_attributes = { reference: 'some reference' }
       run_seed_spec_for_model(Asset, default_attributes)
+      run_canidate_key_specs_for_model(Asset, default_attributes)
     end
 
     describe 'InventoryItem Seeds' do
       default_attributes = { player_id: Player.last.id, item_id: Item.last.id }
       run_seed_spec_for_model(InventoryItem, default_attributes)
+      run_canidate_key_specs_for_model(InventoryItem, default_attributes)
+    end
+
+    describe 'Stage Seeds' do
+      default_attributes = { reference: 'stage_1', order: 1 }
+      run_seed_spec_for_model(Stage, default_attributes)
     end
   end
 end
