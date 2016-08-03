@@ -6,10 +6,6 @@ database:
   override:
     - cd spec/dummy && bundle exec rake db:create && bundle exec rake db:migrate
 
-dependencies:
-  override:
-    - sudo pip install awscli
-
 deployment:
   release:
     branch: master

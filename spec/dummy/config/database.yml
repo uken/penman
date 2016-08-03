@@ -1,6 +1,9 @@
-development:
+development: &development
   adapter: mysql2
   database: penman_dummy
   username: root
   password:
   host: localhost
+
+test:
+  <<: *development
