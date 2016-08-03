@@ -4,11 +4,10 @@ machine:
 
 dependencies:
   override:
-    - bundle install
-    - cd spec/dummy && bundle install
-    - mkdir $HOME/.gem
     - echo '---' >> $HOME/.gem/credentials
     - 'echo ":rubygems_api_key: $RUBYGEMS_CREDENTIAL" >> $HOME/.gem/credentials'
+    - bundle install
+    - cd spec/dummy && bundle install
 
 database:
   override:
