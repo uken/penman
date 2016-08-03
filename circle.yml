@@ -6,6 +6,7 @@ dependencies:
   override:
     - bundle install
     - cd spec/dummy && bundle install
+    - mkdir $HOME/.gem && echo '---' >> $HOME/.gem/credentials && echo ":rubygems_api_key: $RUBYGEMS_CREDENTIAL" >> $HOME/.gem/credentials
 
 database:
   override:
@@ -21,3 +22,4 @@ deployment:
     commands:
       - gem build penman.gemspec
       - curl http://gems.uken.com/upload -XPOST file=@$(echo penman*.gem)
+      - gem push $(echo penman*.gem)
