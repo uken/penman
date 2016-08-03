@@ -14,4 +14,3 @@ deployment:
     commands:
       - gem build penman.gemspec
       - curl http://gems.uken.com/upload -XPOST file=@$(echo penman*.gem)
-      - gem push $(echo penman*.gem)
