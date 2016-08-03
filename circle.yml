@@ -4,7 +4,10 @@ machine:
 
 database:
   override:
-    - cd spec/dummy && bundle install && bundle exec rake db:create && bundle exec rake db:migrate
+    - cd spec/dummy
+    - bundle install
+    - bundle exec rake db:create
+    - bundle exec rake db:migrate
 
 deployment:
   release:
