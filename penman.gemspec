@@ -22,5 +22,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'mysql2', '~> 0.3', '>= 0.3.18'
   s.add_development_dependency 'rspec-rails', '~> 3.3', '>= 3.3.3'
   s.add_development_dependency 'pry-rails', '~> 0.3', '>= 0.3.4'
-  s.add_development_dependency 'database_cleaner', '~> 1.5', '>= 1.5.1'
 end
