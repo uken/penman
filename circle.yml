@@ -2,7 +2,7 @@ machine:
   ruby:
     version: 2.2.3
   environment:
-    RAILS_ENV: test
+    RAILS_ENV: development
 
 dependencies:
   override:
