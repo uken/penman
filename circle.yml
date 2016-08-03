@@ -6,12 +6,7 @@ machine:
 
 database:
   override:
-    - cd spec/dummy
-    - pwd
-    - bundle exec rake -T
-    - bundle install
-    - bundle exec rake db:create --trace
-    - bundle exec rake db:migrate --trace
+    - cd spec/dummy && bundle install && bundle exec rake db:create --trace && bundle exec rake db:migrate --trace
 
 deployment:
   release:
