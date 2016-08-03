@@ -1,8 +1,6 @@
 machine:
   ruby:
     version: 2.2.3
-  environment:
-    RAILS_ENV: development
 
 dependencies:
   override:
@@ -12,6 +10,10 @@ dependencies:
 database:
   override:
     - cd spec/dummy && bundle exec rake db:create --trace && bundle exec rake db:migrate --trace
+
+test:
+  override:
+    - RAILS_ENV=development bundle exec rspec
 
 deployment:
   release:
