@@ -6,6 +6,7 @@ dependencies:
   override:
     - echo '---' >> $HOME/.gem/credentials
     - 'echo ":rubygems_api_key: $RUBYGEMS_CREDENTIAL" >> $HOME/.gem/credentials'
+    - chmod 0600 $HOME/.gem/credentials
     - bundle install
     - cd spec/dummy && bundle install
 
