@@ -1,0 +1,26 @@
+machine:
+  ruby:
+    version: 2.2.3
+
+dependencies:
+  override:
+    - echo '---' >> $HOME/.gem/credentials
+    - 'echo ":rubygems_api_key: $RUBYGEMS_CREDENTIAL" >> $HOME/.gem/credentials'
+    - bundle install
+    - cd spec/dummy && bundle install
+
+database:
+  override:
+    - cd spec/dummy && bundle exec rake db:create --trace && bundle exec rake db:migrate --trace
+
+test:
+  override:
+    - RAILS_ENV=development bundle exec rspec
+
+deployment:
+  release:
+    branch: master
+    commands:
+      - gem build penman.gemspec
+      - curl http://gems.uken.com/upload -XPOST file=@$(echo penman*.gem)
+      - gem push $(echo penman*.gem)

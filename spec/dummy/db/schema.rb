@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160324223036) do
+ActiveRecord::Schema.define(version: 20160730041606) do
 
   create_table "assets", force: :cascade do |t|
     t.string   "reference",  limit: 255
@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 20160324223036) do
   add_index "players", ["name"], name: "index_players_on_name", unique: true, using: :btree
 
   create_table "record_tags", force: :cascade do |t|
-    t.integer  "record_id",            limit: 4,   default: 0,     null: false
+    t.string   "record_id",            limit: 255, default: "0",   null: false
     t.string   "record_type",          limit: 255,                 null: false
     t.string   "candidate_key",        limit: 255,                 null: false
     t.string   "tag",                  limit: 255,                 null: false
@@ -102,6 +102,13 @@ ActiveRecord::Schema.define(version: 20160324223036) do
     t.datetime "updated_at",                null: false
     t.integer  "skill_type_id", limit: 4
   end
+
+  create_table "stages", force: :cascade do |t|
+    t.string  "reference", limit: 255, null: false
+    t.integer "order",     limit: 4
+  end
+
+  add_index "stages", ["reference"], name: "index_stages_on_reference", unique: true, using: :btree
 
   create_table "weapons", force: :cascade do |t|
     t.string   "reference",     limit: 255
