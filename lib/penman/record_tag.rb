@@ -5,7 +5,8 @@ require 'penman/seed_code'
 
 module Penman
   class RecordTag < ActiveRecord::Base
-    belongs_to :record, polymorphic: true
+    # We unscope to bypass default scope for 'soft-deleted' records.
+    belongs_to :record, -> { unscope(where: :deleted_at) }, polymorphic: true
     validates_uniqueness_of :tag, scope: [:record_type, :record_id]
 
     before_save :encode_candidate_key
