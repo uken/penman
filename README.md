@@ -1,8 +1,11 @@
 # Penman
-A scribe for your database and Rails project, Penman records your DB changes and produces seed files that reflect them.
+
+This project is a highly configurable rails engine that provides means to track database changes in realtime for models that you're interested in, when you're interested in them. Once recorded, Penman can produce seed / migration files that reflect these changes, allowing you to propagate them to other environments.
+
+In house at Uken, we use this gem enable our designers to add content to our games in their own environments. They can play, tweak, and iterate on content until they are happy with it, at which time they can push their desired changes down the pipe, eventually reaching our beloved players.
 
 ## A Quick Guide
-Once the gem has been added to your gem file, run `rake db:migrate` to add Penman's `record_tags` table to your DB. This table is used to tag your DB records as they are changed. Now, to the good stuff...
+Once the gem has been added to your gem file, run `rake db:migrate` to add Penman's `record_tags` table to your DB. This table is used to tag your DB records as they are changed.
 
 Say you're interested in tracking changes to a your `Item` model. Include the `Taggable` module in your model:
 
@@ -15,7 +18,7 @@ end
 ```
 By including the `Taggable` module, Penman will track changes to that module via Rails callbacks, and it's `RecordTag` model. However, it will only do this while enabled. Call `Penman.enable` / `Penman.disable` to globally turn on / off Penman tracking. This allows you to easily track changes only in certain contexts, for example, while executing admin panel logic.
 
-Once satisfied with the changes made, call `Penman.generate_seeds` to produce seed files representing the changes. This method returns an array of seed file names which you can use to zip and download, upload elsewhere, commit directly to your repository, etc.
+Once satisfied with the changes made, call `Penman.generate_seeds` to produce seed files representing the changes. This method returns an array of seed file names which you can use to zip and download, upload elsewhere, commit directly to your repository, or to do with whatever else you'd like.
 
 ## Configuration
 Here is an example config file that you should consider putting in a `config/initializers/penman.rb` file if the defaults aren't working for you:
@@ -39,7 +42,7 @@ end
 The `seed_path` option indicates where in the file system Penman should write the seed files, and defaults to `'db/migrate'`.
 
 #### default_candidate_key
-The `default_candidate_key` option is the candidate key used to identify a records by default, and defaults to `:reference`. This can be configured on a model by model basis by adding a `candidate_key` class method to your models. For example:
+The `default_candidate_key` option is the candidate key used to identify records by default, and defaults to `:reference`. This can be configured on a model by model basis by adding a `candidate_key` class method. For example:
 ```ruby
 class Player < ActiveRecord::Base
   include Taggable
