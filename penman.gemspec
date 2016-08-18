@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
   s.version     = Penman::VERSION
   s.authors     = ['Mat Pataki']
   s.email       = ['matpataki@gmail.com']
-  s.homepage    = 'http://uken.com'
-  s.summary     = 'Tracks database changes and generates representative seed files.'
-  s.description = 'A scribe for your database and Rails project, Penman records your DB changes and produces seed files that reflect them.'
+  s.homepage    = 'https://github.com/uken/penman'
+  s.summary     = 'Track realtime database changes and turn them into seed files.'
+  s.description = "This project is a highly configurable rails engine that provides means to track database changes in realtime for models that you're interested in, when you're interested in them. Once recorded, Penman can produce seed / migration files that reflect these changes, allowing you to propagate them to other environments."
   s.license     = 'MIT'
 
   s.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.rdoc']
