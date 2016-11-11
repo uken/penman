@@ -223,7 +223,8 @@ module Penman
         end
 
         seed_code << 'Penman.enable if penman_initially_enabled'
-        seed_file_name = Penman.config.file_name_formatter.call(model.name, 'updates')
+        model_name = model.name.tr('/', '_')
+        seed_file_name = Penman.config.file_name_formatter.call(model_name, 'updates')
         sfg = SeedFileGenerator.new(seed_file_name, timestamp, seed_code)
         sfg.write_seed
       end
